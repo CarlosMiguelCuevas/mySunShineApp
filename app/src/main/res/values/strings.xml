@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">SunshineApp_nueva</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="date">Today, October 04</string>
+    <string name="placeholderforecast">Today-Sunny- 88/63</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="map">Map</string>
+    <string name="action_share">Share</string>
+    <string name="chooser_tittle">Open map with</string>
+    <!--Preferences-->
+    <!-- [CHAR LIMIT = 30]-->
+    <string name="pref_location_label">Location</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_defaut" translatable="false">83068</string>
+    <string name="pref_units_label">Units</string>
+    <string name="pref_units_key" translatable="false">units</string>
+    <string name="pref_units_defaut" translatable="false">metric</string>
+
+
+
+</resources>
