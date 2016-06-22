@@ -18,13 +18,8 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
     @Override
     public void ClickOnItemList(ForecastItem data) {
 //        Toast.makeText(this, data.getForecast(),Toast.LENGTH_SHORT).show();
-        Intent detailIntent = new Intent();
-        detailIntent.setAction(Intent.se);
-        detailIntent.setData(Uri.parse("forecast:"+data.getForecast()));
-        detailIntent.setType("text/plain");
-
-
-
+        Intent detailIntent = new Intent(this,DetailActivity.class);
+        detailIntent.putExtra(DetailFragment.FORECAST_KEY,data);
         startActivity(detailIntent);
     }
 }
