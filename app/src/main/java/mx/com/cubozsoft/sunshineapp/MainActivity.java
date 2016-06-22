@@ -1,5 +1,6 @@
 package mx.com.cubozsoft.sunshineapp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,14 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
 
     @Override
     public void ClickOnItemList(ForecastItem data) {
-        Toast.makeText(this, data.getForecast(),Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, data.getForecast(),Toast.LENGTH_SHORT).show();
+        Intent detailIntent = new Intent();
+        detailIntent.setAction(Intent.se);
+        detailIntent.setData(Uri.parse("forecast:"+data.getForecast()));
+        detailIntent.setType("text/plain");
+
+
+
+        startActivity(detailIntent);
     }
 }
