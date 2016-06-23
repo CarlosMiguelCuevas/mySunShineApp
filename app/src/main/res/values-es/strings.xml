@@ -4,4 +4,7 @@
     <string name="settings">configuracion</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
+    <string name="Location">Lugar</string>
+    <string name="units">unidades</string>
+    <string name="map">mapa</string>
 </resources>

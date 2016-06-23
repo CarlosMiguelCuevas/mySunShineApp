@@ -1,9 +1,12 @@
 package mx.com.cubozsoft.sunshineapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,12 +94,42 @@ public class ListOfWeather extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_refresh)
+        int itemId =item.getItemId();
+
+        if(itemId == R.id.action_refresh)
         {
-            new FetchWeatherTask().execute("94043");
+            udpateData();
             return true;
         }
+        else if (itemId == R.id.action_map)
+        {
+            String pc = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.location_key),"");
+            Intent mapIntent = new Intent();
+            mapIntent.setAction(Intent.ACTION_VIEW);
+            mapIntent.setData(Uri.parse(getString(R.string.querymap,pc)));
+
+            if(mapIntent.resolveActivity(getActivity().getPackageManager()) != null)
+            {
+                startActivity(mapIntent);
+            }
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        udpateData();
+    }
+
+    private void udpateData() {
+        String place = PreferenceManager
+                .getDefaultSharedPreferences(getContext())
+                .getString(getString(R.string.location_key),getString(R.string.default_location));
+
+        new FetchWeatherTask().execute(place);
     }
 
     @Override
@@ -112,13 +145,6 @@ public class ListOfWeather extends Fragment {
 
 
         mDataList = new ArrayList<>();
-        mDataList.add(new ForecastItem("Today - Sunny - 25/35",R.drawable.sunny));
-        mDataList.add(new ForecastItem("Tomorrow - Sunny - 25/35",R.drawable.sunny));
-        mDataList.add(new ForecastItem("Tuesday - Windy - 20/25",R.drawable.windy));
-        mDataList.add(new ForecastItem("Wednesday - Rainy - 15/25",R.drawable.rainy));
-        mDataList.add(new ForecastItem("Thursday - Rainy - 15/25",R.drawable.rainy));
-        mDataList.add(new ForecastItem("friday - Clowdy - 25/35",R.drawable.cludy));
-        mDataList.add(new ForecastItem("Today - Sunny - 40/45",R.drawable.sunny));
 
         mManager = new LinearLayoutManager(getContext());
         mAdapter = new ForecastAdapter(mDataList,getActivity());
@@ -290,6 +316,15 @@ public class ListOfWeather extends Fragment {
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 
+            //if Imperial we convert
+            String actualValue =PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.pref_units_key),"");
+            String metric = getString(R.string.default_value_list_units);
+            if( actualValue != metric){
+                roundedHigh = convertTempUnits(roundedHigh);
+                roundedLow = convertTempUnits(roundedLow);
+            }
+
+
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
         }
@@ -403,6 +438,13 @@ public class ListOfWeather extends Fragment {
 
             return resultforecasts;
 
+        }
+
+        public long convertTempUnits(long temp){
+            long f;
+
+            f = temp * (9/5) + 32;
+            return f;
         }
 
     }
