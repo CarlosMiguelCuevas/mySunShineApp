@@ -374,10 +374,10 @@ public class ListOfWeather extends Fragment {
                 dateTime = dayTime.setJulianDay(julianStartDay+i);
                 switch (i){
                     case 0:
-                        day = "today";
+                        day = getString(R.string.today);
                         break;
                     case 1:
-                        day = "tomorrow";
+                        day = getString(R.string.tomorrow);
                         break;
                     default:
                         day = getReadableDateString(dateTime);

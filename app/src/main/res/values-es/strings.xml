@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SunShineApp</string>
+    <string name="settings">configuracion</string>
+    <string name="today">Hoy</string>
+    <string name="tomorrow">Mañana</string>
+</resources>
