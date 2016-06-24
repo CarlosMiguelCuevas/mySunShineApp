@@ -232,7 +232,7 @@ public class ListOfWeather extends Fragment {
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
                 URL url = new URL(uri);
-
+                Log.v(LOG_TAG,url.toString());
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -319,7 +319,7 @@ public class ListOfWeather extends Fragment {
             //if Imperial we convert
             String actualValue =PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.pref_units_key),"");
             String metric = getString(R.string.default_value_list_units);
-            if( actualValue != metric){
+            if(! actualValue.equals(metric)){
                 roundedHigh = convertTempUnits(roundedHigh);
                 roundedLow = convertTempUnits(roundedLow);
             }

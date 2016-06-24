@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -32,11 +37,33 @@ public class DetailFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.detal_menu,menu);
+
+        //get a referenc to the item in the menu
+        MenuItem shareItem = menu.findItem(R.id.action_share);
+        //we get teh action provider usinfg the menu
+        ShareActionProvider myShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(shareItem);
+
+        //we craete the intent with the info to share
+        Intent myShareIntent = new Intent(Intent.ACTION_SEND);
+        myShareIntent.setType("text/plain");
+        myShareIntent.putExtra(Intent.EXTRA_TEXT,mForecast.getForecast());
+
+        //we set the intent to the shareactionprovider
+        myShareActionProvider.setShareIntent(myShareIntent);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mForecast = (ForecastItem) getArguments().getParcelable(FORECAST_KEY);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
