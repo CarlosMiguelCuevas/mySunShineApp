@@ -1,12 +1,16 @@
-package mx.com.cubozsoft.sunshineapp;
+package mx.com.cubozsoft.sunshineapp.listaPrincipal;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+
+import mx.com.cubozsoft.sunshineapp.detalle.DetailActivity;
+import mx.com.cubozsoft.sunshineapp.detalle.DetailFragment;
+import mx.com.cubozsoft.sunshineapp.ForecastItem;
+import mx.com.cubozsoft.sunshineapp.R;
+import mx.com.cubozsoft.sunshineapp.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements ListOfWeather.OnFragmentInteractionListener{
 
@@ -14,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
     }
 
     @Override

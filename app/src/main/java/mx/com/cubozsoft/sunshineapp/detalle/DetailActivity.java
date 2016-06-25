@@ -1,11 +1,13 @@
-package mx.com.cubozsoft.sunshineapp;
+package mx.com.cubozsoft.sunshineapp.detalle;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import mx.com.cubozsoft.sunshineapp.R;
+import mx.com.cubozsoft.sunshineapp.settings.SettingsActivity;
 
 public class DetailActivity extends AppCompatActivity {
 

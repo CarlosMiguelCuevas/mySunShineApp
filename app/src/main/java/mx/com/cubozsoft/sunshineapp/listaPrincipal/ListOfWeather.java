@@ -1,8 +1,9 @@
-package mx.com.cubozsoft.sunshineapp;
+package mx.com.cubozsoft.sunshineapp.listaPrincipal;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,6 +34,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.cubozsoft.sunshineapp.ForecastAdapter;
+import mx.com.cubozsoft.sunshineapp.ForecastItem;
+import mx.com.cubozsoft.sunshineapp.R;
+import mx.com.cubozsoft.sunshineapp.WifiConectorReciever;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,6 +54,7 @@ public class ListOfWeather extends Fragment {
     static final String ARG_PARAM1 = "param1";
     static final String ARG_PARAM2 = "param2";
     List<ForecastItem> mDataList;
+    BroadcastReceiver mReceiver;
 
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
@@ -90,6 +97,18 @@ public class ListOfWeather extends Fragment {
         }
 
         setHasOptionsMenu(true);
+
+
+    }
+
+    @Override
+    public void onStop() {
+        if (mReceiver != null) {
+            getActivity().unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
+
+        super.onStop();
     }
 
     @Override
@@ -120,6 +139,13 @@ public class ListOfWeather extends Fragment {
 
     @Override
     public void onStart() {
+        //registering the receiver
+
+        IntentFilter filter =  new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        mReceiver = new WifiConectorReciever();
+        getActivity().registerReceiver(mReceiver,filter);
+
         super.onStart();
         udpateData();
     }

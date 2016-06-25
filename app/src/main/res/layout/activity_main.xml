@@ -7,14 +7,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="mx.com.cubozsoft.sunshineapp.MainActivity"
+    tools:context=".listaPrincipal.MainActivity"
     android:id="@+id/rootView">
 
     <fragment
         android:id="@+id/listFragment"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        class="mx.com.cubozsoft.sunshineapp.ListOfWeather"
+        class="mx.com.cubozsoft.sunshineapp.listaPrincipal.ListOfWeather"
         tools:layout="@layout/fragment_list_of_weather">
 
     </fragment>

@@ -1,7 +1,6 @@
 package mx.com.cubozsoft.sunshineapp;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import mx.com.cubozsoft.sunshineapp.listaPrincipal.ListOfWeather;
 
 /**
  * Created by carlos on 19/06/16.

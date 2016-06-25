@@ -1,4 +1,4 @@
-package mx.com.cubozsoft.sunshineapp;
+package mx.com.cubozsoft.sunshineapp.settings;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import mx.com.cubozsoft.sunshineapp.R;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener{
     @Override
