@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package mx.com.cubozsoft.sunshineapp;
+package mx.com.cubozsoft.sunshineapp.data;
 
 import android.test.suitebuilder.TestSuiteBuilder;
 
