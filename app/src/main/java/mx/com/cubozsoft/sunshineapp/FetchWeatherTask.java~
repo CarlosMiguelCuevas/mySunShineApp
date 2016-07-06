@@ -314,8 +314,11 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
             // add to database
             if ( cVVector.size() > 0 ) {
                 // Student: call bulkInsert to add the weatherEntries to the database here
+<<<<<<< HEAD
                 mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI,cVVector.toArray(new ContentValues[cVVector.size()]));
-
+=======
+               // mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI,cVVector.toArray(new ContentValues[cVVector.size()]));
+>>>>>>> 7045895a88e41d45b8f726263617eaeeb5eba5a6
             }
 
             // Sort order:  Ascending, by date.
