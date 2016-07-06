@@ -15,9 +15,12 @@
  */
 package mx.com.cubozsoft.sunshineapp;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -26,6 +29,7 @@ import android.text.format.Time;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
 import mx.com.cubozsoft.sunshineapp.data.WeatherContract.WeatherEntry;
 
 import org.json.JSONArray;
@@ -41,6 +45,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
@@ -110,7 +115,37 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
         // Students: First, check if the location with this city name exists in the db
         // If it exists, return the current ID
         // Otherwise, insert it using the content resolver and the base URI
-        return -1;
+
+        long idLocation = -1;
+        ContentResolver resolver = mContext.getContentResolver();
+        Uri locationUri =  WeatherContract.LocationEntry.CONTENT_URI;
+        Cursor quriedData = resolver.query(
+                locationUri,
+                new String[]{WeatherContract.LocationEntry._ID},
+                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
+                new String[]{locationSetting},
+                null);
+        //true, it has something
+        if(quriedData.moveToFirst())
+        {
+            int idColumn = quriedData.getColumnIndex(WeatherContract.LocationEntry._ID);
+            idLocation = quriedData.getLong(idColumn);
+        }
+        else //insert
+        {
+            ContentValues values = new ContentValues();
+
+            values.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
+            values.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
+            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
+            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
+
+            Uri responseUri = resolver.insert(locationUri,values);
+            idLocation = Integer.parseInt(responseUri.getLastPathSegment());
+
+        }
+
+        return idLocation;
     }
 
     /*
@@ -234,9 +269,18 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
 
                 pressure = dayMain.getDouble(OWM_PRESSURE);
                 humidity = dayMain.getInt(OWM_HUMIDITY);
-                JSONObject wind = dayForecast.getJSONObject(OWM_WIND);
-                windSpeed = wind.getDouble(OWM_WINDSPEED);
-                windDirection = wind.getDouble(OWM_WIND_DIRECTION);
+
+                try{
+                    JSONObject wind = dayForecast.getJSONObject(OWM_WIND);
+                    windSpeed = wind.getDouble(OWM_WINDSPEED);
+                    windDirection = wind.getDouble(OWM_WIND_DIRECTION);
+
+                }catch(Exception e)
+                {
+                    windSpeed = 0;
+                    windDirection = 0;
+                }
+
 
                 // Description is in a child array called "weather", which is 1 element long.
                 // That element also contains a weather code.
@@ -270,6 +314,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
             // add to database
             if ( cVVector.size() > 0 ) {
                 // Student: call bulkInsert to add the weatherEntries to the database here
+                mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI,cVVector.toArray(new ContentValues[cVVector.size()]));
             }
 
             // Sort order:  Ascending, by date.
@@ -279,24 +324,23 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
 
             // Students: Uncomment the next lines to display what what you stored in the bulkInsert
 
-//            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
-//                    null, null, null, sortOrder);
-//
-//            cVVector = new Vector<ContentValues>(cur.getCount());
-//            if ( cur.moveToFirst() ) {
-//                do {
-//                    ContentValues cv = new ContentValues();
-//                    DatabaseUtils.cursorRowToContentValues(cur, cv);
-//                    cVVector.add(cv);
-//                } while (cur.moveToNext());
-//            }
+            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
+                    null, null, null, sortOrder);
+
+            cVVector = new Vector<ContentValues>(cur.getCount());
+            if ( cur.moveToFirst() ) {
+                do {
+                    ContentValues cv = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cur, cv);
+                    cVVector.add(cv);
+                } while (cur.moveToNext());
+            }
 
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
 
             String[] resultStrs = convertContentValuesToUXFormat(cVVector);
             ForecastItem[] resultForItem = new ForecastItem[resultStrs.length];
             // ciclo para mantebner funcional al interfaz por ahora
-
             for(int i = 0 ;i<resultStrs.length; i ++)
             {
                 resultForItem[i] = new ForecastItem(resultStrs[i],getIamge(cVVector.get(i).getAsString(WeatherEntry.COLUMN_SHORT_DESC)));
