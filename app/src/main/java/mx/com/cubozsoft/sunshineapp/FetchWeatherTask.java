@@ -144,7 +144,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
             idLocation = Integer.parseInt(responseUri.getLastPathSegment());
 
         }
-
+        quriedData.close();
         return idLocation;
     }
 
@@ -335,6 +335,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
                     DatabaseUtils.cursorRowToContentValues(cur, cv);
                     cVVector.add(cv);
                 } while (cur.moveToNext());
+                cur.close();
             }
 
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
