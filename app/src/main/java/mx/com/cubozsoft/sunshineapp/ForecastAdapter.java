@@ -1,6 +1,7 @@
 package mx.com.cubozsoft.sunshineapp;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
 import mx.com.cubozsoft.sunshineapp.listaPrincipal.ListOfWeather;
 
 /**
@@ -19,10 +21,10 @@ import mx.com.cubozsoft.sunshineapp.listaPrincipal.ListOfWeather;
  */
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHolder>{
     private final String LOG_TAG = ForecastAdapter.class.getSimpleName();
-    private List<ForecastItem> mDataSet = new ArrayList<>();
+    private Cursor mDataSet = null;
     private ListOfWeather.OnFragmentInteractionListener mListener;
 
-    public ForecastAdapter(List<ForecastItem> mDataSet, Context context) {
+    public ForecastAdapter(Cursor mDataSet, Context context) {
         this.mDataSet = mDataSet;
         if(context instanceof ListOfWeather.OnFragmentInteractionListener)
         {
@@ -47,7 +49,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     //it is used byt the layout manager to replace the data
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.mTextView.setText(mDataSet.get(position).getForecast());
+
+        mDataSet.moveToPosition(position);
+
+        holder.mTextView.setText(convertCursorRowToUXFormat(mDataSet));
         holder.mImageView.setImageResource(mDataSet.get(position).getImage());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +66,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     //it is used by the layout manager
     @Override
     public int getItemCount() {
-        return mDataSet.size();
+        return mDataSet.getCount();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -76,5 +81,28 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
             mImageView = (ImageView)parent.findViewById(R.id.item_frescast_imageview);
         }
     }
+
+    private String convertCursorRowToUXFormat(Cursor cursor) {
+        // get row indices for our cursor
+        int idx_max_temp = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP);
+        int idx_min_temp = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP);
+        int idx_date = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE);
+        int idx_short_desc = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
+
+        String highAndLow = formatHighLows(
+                cursor.getDouble(idx_max_temp),
+                cursor.getDouble(idx_min_temp));
+
+        return Utility.formatDate(cursor.getLong(idx_date)) +
+                " - " + cursor.getString(idx_short_desc) +
+                " - " + highAndLow;
+    }
+
+    private String formatHighLows(double high, double low) {
+        boolean isMetric = Utility.isMetric(mContext);
+        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
+        return highLowStr;
+    }
+
 
 }
