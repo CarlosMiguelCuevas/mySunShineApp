@@ -48,28 +48,29 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
 
-public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
+public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
 
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
-    private RecyclerView.Adapter mForecastAdapter;
-    private List<ForecastItem> mData;
+
     private final Context mContext;
 
-    public FetchWeatherTask(Context context, RecyclerView.Adapter forecastAdapter, List<ForecastItem> data) {
+    public FetchWeatherTask(Context context) {
         mContext = context;
-        mData = data;
-        mForecastAdapter = forecastAdapter;
+
     }
 
     private boolean DEBUG = true;
 
-    long addLocation(String locationSetting, String cityName, double lat, double lon) {
+    long addLocation(String locationSetting, String cityName, double lat, double lng) {
+
+
         // Students: First, check if the location with this city name exists in the db
         // If it exists, return the current ID
         // Otherwise, insert it using the content resolver and the base URI
 
         long idLocation = -1;
+        double longitude = lng; //this is a helper var, because i was getting an extrage behavior
         ContentResolver resolver = mContext.getContentResolver();
         Uri locationUri =  WeatherContract.LocationEntry.CONTENT_URI;
         Cursor quriedData = resolver.query(
@@ -91,7 +92,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
             values.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
             values.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
             values.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
-            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
+            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, longitude);
 
             Uri responseUri = resolver.insert(locationUri,values);
             idLocation = Integer.parseInt(responseUri.getLastPathSegment());
@@ -101,7 +102,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
         return idLocation;
     }
 
-    private ForecastItem[] getWeatherDataFromJson(String forecastJsonStr,
+    private Void getWeatherDataFromJson(String forecastJsonStr,
                                             String locationSetting)
             throws JSONException {
 
@@ -149,7 +150,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
             double cityLatitude = cityCoord.getDouble(OWM_LATITUDE);
             double cityLongitude = cityCoord.getDouble(OWM_LONGITUDE);
 
-            long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
+            long locationId = addLocation(locationSetting,cityName,cityLatitude,cityLongitude);
 
             // Insert the new weather information into the database
             Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
@@ -247,17 +248,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
 
 
-            ForecastItem[] resultForItem = new ForecastItem[cVVector.size()];
-            // ciclo para mantebner funcional al interfaz por ahora
-            for(int i = 0 ;i<cVVector.size(); i ++)
-            {
-                resultForItem[i] = new ForecastItem(resultStrs[i],getIamge(cVVector.get(i).getAsString(WeatherEntry.COLUMN_SHORT_DESC)));
-            }
-
-            //
-
-            return resultForItem;
-
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -266,7 +256,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
     }
 
     @Override
-    protected ForecastItem[] doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
 
         // If there's no zip code, there's nothing to look up.  Verify size of params.
         if (params.length == 0) {
@@ -355,7 +345,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
         }
 
         try {
-            return getWeatherDataFromJson(forecastJsonStr, locationQuery);
+            getWeatherDataFromJson(forecastJsonStr, locationQuery);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();

@@ -157,7 +157,7 @@ public class ListOfWeather extends Fragment {
     private void updateData() {
         String place = Utility.getPreferredLocation(getContext());
 
-        new FetchWeatherTask(getContext(),mAdapter,mDataList).execute(place);
+        new FetchWeatherTask(getContext()).execute(place);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class ListOfWeather extends Fragment {
 
         String locationSetting = Utility.getPreferredLocation(getActivity());
         Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + "ASC";
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
 
         mDataList = getActivity().getContentResolver().query(weatherForLocationUri,null,null,null,sortOrder);
 

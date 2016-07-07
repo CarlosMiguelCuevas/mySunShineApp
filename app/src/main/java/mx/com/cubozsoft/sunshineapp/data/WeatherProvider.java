@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 public class WeatherProvider extends ContentProvider {
 
@@ -174,6 +175,9 @@ public class WeatherProvider extends ContentProvider {
         // Here's the switch statement that, given a URI, will determine what kind of request it is,
         // and query the database accordingly.
         Cursor retCursor;
+        Log.v("URI TEST", String.valueOf(uri));
+        Log.v("URI TEST MATCH", String.valueOf(sUriMatcher.match(uri)));
+
         switch (sUriMatcher.match(uri)) {
             // "weather/*/*"
             case WEATHER_WITH_LOCATION_AND_DATE:
@@ -241,8 +245,10 @@ public class WeatherProvider extends ContentProvider {
                 break;
             }
             case LOCATION: {
-//                normalizeDate(values);
+                Log.v("DEBUGING INSERTIIN", "ENTREEEEE A LOCATION");
+                Log.v("VALORES", String.valueOf(values));
                 long _id = db.insert(WeatherContract.LocationEntry.TABLE_NAME, null, values);
+                Log.v("POINT","LLEGO aqui");
                 if ( _id > 0 )
                     returnUri = WeatherContract.LocationEntry.buildLocationUri(_id);
                 else
