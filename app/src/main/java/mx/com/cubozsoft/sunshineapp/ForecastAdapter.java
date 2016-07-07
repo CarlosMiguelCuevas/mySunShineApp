@@ -23,12 +23,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     private final String LOG_TAG = ForecastAdapter.class.getSimpleName();
     private Cursor mDataSet = null;
     private ListOfWeather.OnFragmentInteractionListener mListener;
+    private Context mContext;
 
     public ForecastAdapter(Cursor mDataSet, Context context) {
         this.mDataSet = mDataSet;
         if(context instanceof ListOfWeather.OnFragmentInteractionListener)
         {
             this.mListener = (ListOfWeather.OnFragmentInteractionListener) context;
+            this.mContext = context;
         }
         else
         {
@@ -53,14 +55,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         mDataSet.moveToPosition(position);
 
         holder.mTextView.setText(convertCursorRowToUXFormat(mDataSet));
-        holder.mImageView.setImageResource(mDataSet.get(position).getImage());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(LOG_TAG,"Im tapping");
-                mListener.ClickOnItemList(mDataSet.get(position));
-            }
-        });
+        holder.mImageView.setImageResource(getTheImage(mDataSet));
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.v(LOG_TAG,"Im tapping");
+//                mListener.ClickOnItemList(mDataSet.get(position));
+//            }
+//        });
     }
 
     //it is used by the layout manager
@@ -96,6 +98,29 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         return Utility.formatDate(cursor.getLong(idx_date)) +
                 " - " + cursor.getString(idx_short_desc) +
                 " - " + highAndLow;
+    }
+
+    private int getTheImage(Cursor cursor) {
+        int idx_description = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
+        String description = cursor.getString(idx_description);
+        int image = 0;
+
+        switch(description){
+            case "Clouds":
+                image = R.drawable.cludy;
+                break;
+            case "Rain":
+                image = R.drawable.rainy;
+                break;
+            case "Wind":
+                image = R.drawable.windy;
+                break;
+            default:
+                image = R.drawable.sunny;
+                break;
+        }
+
+        return image;
     }
 
     private String formatHighLows(double high, double low) {

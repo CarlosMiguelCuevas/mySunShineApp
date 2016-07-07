@@ -64,53 +64,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
 
     private boolean DEBUG = true;
 
-    /* The date/time conversion code is going to be moved outside the asynctask later,
-     * so for convenience we're breaking it out into its own method now.
-     */
-    private String getReadableDateString(long time){
-        // Because the API returns a unix timestamp (measured in seconds),
-        // it must be converted to milliseconds in order to be converted to valid date.
-        Date date = new Date(time);
-        SimpleDateFormat format = new SimpleDateFormat("E, MMM d");
-        return format.format(date).toString();
-    }
-    public long convertTempUnits(long temp){
-        long f;
-
-        f = temp * (9/5) + 32;
-        return f;
-    }
-
-    /**
-     * Prepare the weather high/lows for presentation.
-     */
-    private String formatHighLows(double high, double low) {
-        // For presentation, assume the user doesn't care about tenths of a degree.
-        long roundedHigh = Math.round(high);
-        long roundedLow = Math.round(low);
-
-        //if Imperial we convert
-        String actualValue =PreferenceManager.getDefaultSharedPreferences(mContext).getString(mContext.getString(R.string.pref_units_key),"");
-        String metric = mContext.getString(R.string.default_value_list_units);
-        if(! actualValue.equals(metric)){
-            roundedHigh = convertTempUnits(roundedHigh);
-            roundedLow = convertTempUnits(roundedLow);
-        }
-
-
-        String highLowStr = roundedHigh + "/" + roundedLow;
-        return highLowStr;
-    }
-
-    /**
-     * Helper method to handle insertion of a new location in the weather database.
-     *
-     * @param locationSetting The location string used to request updates from the server.
-     * @param cityName A human-readable city name, e.g "Mountain View"
-     * @param lat the latitude of the city
-     * @param lon the longitude of the city
-     * @return the row ID of the added location.
-     */
     long addLocation(String locationSetting, String cityName, double lat, double lon) {
         // Students: First, check if the location with this city name exists in the db
         // If it exists, return the current ID
@@ -148,34 +101,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
         return idLocation;
     }
 
-    /*
-        Students: This code will allow the FetchWeatherTask to continue to return the strings that
-        the UX expects so that we can continue to test the application even once we begin using
-        the database.
-     */
-    String[] convertContentValuesToUXFormat(Vector<ContentValues> cvv) {
-        // return strings to keep UI functional for now
-        String[] resultStrs = new String[cvv.size()];
-        for ( int i = 0; i < cvv.size(); i++ ) {
-            ContentValues weatherValues = cvv.elementAt(i);
-            String highAndLow = formatHighLows(
-                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MAX_TEMP),
-                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MIN_TEMP));
-            resultStrs[i] = getReadableDateString(
-                    weatherValues.getAsLong(WeatherEntry.COLUMN_DATE)) +
-                    " - " + weatherValues.getAsString(WeatherEntry.COLUMN_SHORT_DESC) +
-                    " - " + highAndLow;
-        }
-        return resultStrs;
-    }
-
-    /**
-     * Take the String representing the complete forecast in JSON Format and
-     * pull out the data we need to construct the Strings needed for the wireframes.
-     *
-     * Fortunately parsing is easy:  constructor takes the JSON string and converts it
-     * into an Object hierarchy for us.
-     */
     private ForecastItem[] getWeatherDataFromJson(String forecastJsonStr,
                                             String locationSetting)
             throws JSONException {
@@ -318,32 +243,13 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
 
             }
 
-            // Sort order:  Ascending, by date.
-            String sortOrder = WeatherEntry.COLUMN_DATE + " ASC";
-            Uri weatherForLocationUri = WeatherEntry.buildWeatherLocationWithStartDate(
-                    locationSetting, System.currentTimeMillis());
-
-            // Students: Uncomment the next lines to display what what you stored in the bulkInsert
-
-            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
-                    null, null, null, sortOrder);
-
-            cVVector = new Vector<ContentValues>(cur.getCount());
-            if ( cur.moveToFirst() ) {
-                do {
-                    ContentValues cv = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cur, cv);
-                    cVVector.add(cv);
-                } while (cur.moveToNext());
-                cur.close();
-            }
 
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
 
-            String[] resultStrs = convertContentValuesToUXFormat(cVVector);
-            ForecastItem[] resultForItem = new ForecastItem[resultStrs.length];
+
+            ForecastItem[] resultForItem = new ForecastItem[cVVector.size()];
             // ciclo para mantebner funcional al interfaz por ahora
-            for(int i = 0 ;i<resultStrs.length; i ++)
+            for(int i = 0 ;i<cVVector.size(); i ++)
             {
                 resultForItem[i] = new ForecastItem(resultStrs[i],getIamge(cVVector.get(i).getAsString(WeatherEntry.COLUMN_SHORT_DESC)));
             }
@@ -458,37 +364,4 @@ public class FetchWeatherTask extends AsyncTask<String, Void, ForecastItem[]> {
         return null;
     }
 
-    @Override
-    protected void onPostExecute(ForecastItem[] result) {
-        if (result != null) {
-            mData.clear();
-            for(ForecastItem dayForecastStr : result) {
-                mData.add(dayForecastStr);
-            }
-            mForecastAdapter.notifyDataSetChanged();
-            // New data is back from the server.  Hooray!
-        }
-    }
-
-    private int getIamge(String description)
-    {
-        int image = 0;
-
-        switch(description){
-            case "Clouds":
-                image = R.drawable.cludy;
-                break;
-            case "Rain":
-                image = R.drawable.rainy;
-                break;
-            case "Wind":
-                image = R.drawable.windy;
-                break;
-            default:
-                image = R.drawable.sunny;
-                break;
-        }
-
-        return image;
-    }
 }

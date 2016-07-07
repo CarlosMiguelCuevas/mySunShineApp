@@ -15,5 +15,6 @@
     <string name="map">map</string>
     <string name="querymap">geo:0,0?q=<xliff:g id="cp_preferences" example="83068">%s</xliff:g></string>
     <string name="share_title_menu">share</string>
+    <string name="pref_units_metric">m</string>
 
 </resources>

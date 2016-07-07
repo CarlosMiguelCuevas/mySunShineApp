@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,7 +39,9 @@ import mx.com.cubozsoft.sunshineapp.FetchWeatherTask;
 import mx.com.cubozsoft.sunshineapp.ForecastAdapter;
 import mx.com.cubozsoft.sunshineapp.ForecastItem;
 import mx.com.cubozsoft.sunshineapp.R;
+import mx.com.cubozsoft.sunshineapp.Utility;
 import mx.com.cubozsoft.sunshineapp.WifiConectorReciever;
+import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
 
 
 /**
@@ -54,7 +57,7 @@ public class ListOfWeather extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     static final String ARG_PARAM1 = "param1";
     static final String ARG_PARAM2 = "param2";
-    List<ForecastItem> mDataList;
+    Cursor mDataList;
     BroadcastReceiver mReceiver;
 
     RecyclerView mRecyclerView;
@@ -118,7 +121,7 @@ public class ListOfWeather extends Fragment {
 
         if(itemId == R.id.action_refresh)
         {
-            udpateData();
+            updateData();
             return true;
         }
         else if (itemId == R.id.action_map)
@@ -148,13 +151,11 @@ public class ListOfWeather extends Fragment {
         getActivity().registerReceiver(mReceiver,filter);
 
         super.onStart();
-        udpateData();
+//        updateData();
     }
 
-    private void udpateData() {
-        String place = PreferenceManager
-                .getDefaultSharedPreferences(getContext())
-                .getString(getString(R.string.location_key),getString(R.string.default_location));
+    private void updateData() {
+        String place = Utility.getPreferredLocation(getContext());
 
         new FetchWeatherTask(getContext(),mAdapter,mDataList).execute(place);
     }
@@ -170,8 +171,11 @@ public class ListOfWeather extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_list_of_weather, container, false);
 
+        String locationSetting = Utility.getPreferredLocation(getActivity());
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + "ASC";
 
-        mDataList = new ArrayList<>();
+        mDataList = getActivity().getContentResolver().query(weatherForLocationUri,null,null,null,sortOrder);
 
         mManager = new LinearLayoutManager(getContext());
         mAdapter = new ForecastAdapter(mDataList,getActivity());
