@@ -24,6 +24,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     private Cursor mDataSet = null;
     private ListOfWeather.OnFragmentInteractionListener mListener;
     private Context mContext;
+    private int mRowIDColumn;
+    private boolean mDataValid;
 
     public ForecastAdapter(Cursor mDataSet, Context context) {
         this.mDataSet = mDataSet;
@@ -127,6 +129,25 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         boolean isMetric = Utility.isMetric(mContext);
         String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
         return highLowStr;
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        if (newCursor == mDataSet) {
+            return;
+        }
+
+        if (newCursor != null) {
+            mDataSet = newCursor;
+            mRowIDColumn = mDataSet.getColumnIndexOrThrow("_id");
+            mDataValid = true;
+            // notify the observers about the new cursor
+            notifyDataSetChanged();
+        } else {
+            notifyItemRangeRemoved(0, getItemCount());
+            mDataSet = null;
+            mRowIDColumn = -1;
+            mDataValid = false;
+        }
     }
 
 

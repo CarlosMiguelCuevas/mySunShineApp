@@ -6,34 +6,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import mx.com.cubozsoft.sunshineapp.FetchWeatherTask;
 import mx.com.cubozsoft.sunshineapp.ForecastAdapter;
@@ -44,14 +31,20 @@ import mx.com.cubozsoft.sunshineapp.WifiConectorReciever;
 import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
 
 
-public class ListOfWeather extends Fragment {
+public class ListOfWeather extends Fragment
+    implements LoaderManager.LoaderCallbacks<Cursor>{
 
     Cursor mDataList;
     BroadcastReceiver mReceiver;
     RecyclerView mRecyclerView;
-    RecyclerView.Adapter mAdapter;
+    ForecastAdapter mAdapter;
     RecyclerView.LayoutManager mManager;
     OnFragmentInteractionListener mListener;
+    String mLocationSetting = "";
+    Uri mWeatherForLocationUri = null;
+    String mSortOrder;
+
+    private static final int LOADER_ID = 1024;
 
     public ListOfWeather() {
         // Required empty public constructor
@@ -61,6 +54,12 @@ public class ListOfWeather extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(LOADER_ID,null,this);
     }
 
     @Override
@@ -129,12 +128,11 @@ public class ListOfWeather extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_list_of_weather, container, false);
 
-        String locationSetting = Utility.getPreferredLocation(getActivity());
-        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        mLocationSetting = Utility.getPreferredLocation(getActivity());
+        mWeatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(mLocationSetting, System.currentTimeMillis());
+        mSortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
 
-        mDataList = getActivity().getContentResolver().query(weatherForLocationUri,null,null,null,sortOrder);
-
+        mDataList = getActivity().getContentResolver().query(mWeatherForLocationUri,null,null,null,mSortOrder);
         mManager = new LinearLayoutManager(getContext());
         mAdapter = new ForecastAdapter(mDataList,getActivity());
 
@@ -180,4 +178,33 @@ public class ListOfWeather extends Fragment {
         void ClickOnItemList(ForecastItem item);
     }
 
+    //region Loader Implementation
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = new CursorLoader(this.getActivity(),
+                mWeatherForLocationUri,null,null,null,mSortOrder);
+
+        return loader;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        //If the loader is reset, we need to clear out the
+        //current cursor from the adapter.
+        mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //When the loader has loaded some data (either initially, or the
+        //datasource has changed and a new cursor is being provided),
+        //Then we'll swap out the curser in our recyclerview's adapter
+        // and we'll create the adapter if necessary
+        if (mAdapter == null) {
+            mAdapter = new ForecastAdapter(mDataList,getActivity());
+        }
+
+        mAdapter.swapCursor(data);
+    }
+    //endregion
 }
