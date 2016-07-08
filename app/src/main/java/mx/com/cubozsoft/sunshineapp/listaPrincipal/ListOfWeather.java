@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -34,10 +35,40 @@ import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
 public class ListOfWeather extends Fragment
     implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    Cursor mDataList;
+    private static final String[] FORECAST_COLUMNS = {
+            // In this case the id needs to be fully qualified with a table name, since
+            // the content provider joins the location & weather tables in the background
+            // (both have an _id column)
+            // On the one hand, that's annoying.  On the other, you can search the weather table
+            // using the location set by the user, which is only in the Location table.
+            // So the convenience is worth it.
+            WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
+            WeatherContract.WeatherEntry.COLUMN_DATE,
+            WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
+            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
+            WeatherContract.LocationEntry.COLUMN_COORD_LAT,
+            WeatherContract.LocationEntry.COLUMN_COORD_LONG
+    };
+
+    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // must change.
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_LOCATION_SETTING = 5;
+    public static final int COL_WEATHER_CONDITION_ID = 6;
+    public static final int COL_COORD_LAT = 7;
+    public static final int COL_COORD_LONG = 8;
+
+    Cursor mDataList = null;
     BroadcastReceiver mReceiver;
     RecyclerView mRecyclerView;
-    ForecastAdapter mAdapter;
+    ForecastAdapter mAdapter = null;
     RecyclerView.LayoutManager mManager;
     OnFragmentInteractionListener mListener;
     String mLocationSetting = "";
@@ -108,7 +139,7 @@ public class ListOfWeather extends Fragment
         getActivity().registerReceiver(mReceiver,filter);
 
         super.onStart();
-//        updateData();
+        updateData();
     }
 
     private void updateData() {
@@ -128,11 +159,6 @@ public class ListOfWeather extends Fragment
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_list_of_weather, container, false);
 
-        mLocationSetting = Utility.getPreferredLocation(getActivity());
-        mWeatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(mLocationSetting, System.currentTimeMillis());
-        mSortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-
-        mDataList = getActivity().getContentResolver().query(mWeatherForLocationUri,null,null,null,mSortOrder);
         mManager = new LinearLayoutManager(getContext());
         mAdapter = new ForecastAdapter(mDataList,getActivity());
 
@@ -181,17 +207,19 @@ public class ListOfWeather extends Fragment
     //region Loader Implementation
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        String locationSetting = Utility.getPreferredLocation(getActivity());
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting, System.currentTimeMillis());
+
         CursorLoader loader = new CursorLoader(this.getActivity(),
-                mWeatherForLocationUri,null,null,null,mSortOrder);
+                weatherForLocationUri,
+                FORECAST_COLUMNS,
+                null,
+                null,
+                sortOrder);
 
         return loader;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        //If the loader is reset, we need to clear out the
-        //current cursor from the adapter.
-        mAdapter.swapCursor(null);
     }
 
     @Override
@@ -205,6 +233,13 @@ public class ListOfWeather extends Fragment
         }
 
         mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        //If the loader is reset, we need to clear out the
+        //current cursor from the adapter.
+        mAdapter.swapCursor(null);
     }
     //endregion
 }
