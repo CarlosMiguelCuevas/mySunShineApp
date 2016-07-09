@@ -1,5 +1,6 @@
 package mx.com.cubozsoft.sunshineapp.listaPrincipal;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,10 +20,34 @@ import mx.com.cubozsoft.sunshineapp.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements ListOfWeather.OnFragmentInteractionListener{
 
+    private String mLocation;
+    private String FORECASTLISTFRAGMENT_TAG = "FLF";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String actialSettingLocation = Utility.getPreferredLocation(this);
+        if(!mLocation.equals(actialSettingLocation))
+        {
+            //it has change
+            ListOfWeather forecastf =(ListOfWeather) getSupportFragmentManager().findFragmentByTag(FORECASTLISTFRAGMENT_TAG);
+            forecastf.onLocationChanged();
+            mLocation = actialSettingLocation;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLocation = Utility.getPreferredLocation(this);
+
+        if(savedInstanceState == null)
+        {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.rootView,new ListOfWeather(),FORECASTLISTFRAGMENT_TAG)
+                    .commit();
+        }
 
     }
 

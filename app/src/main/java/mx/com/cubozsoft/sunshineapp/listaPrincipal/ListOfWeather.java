@@ -34,8 +34,19 @@ import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
 
 
 public class ListOfWeather extends Fragment
-    implements LoaderManager.LoaderCallbacks<Cursor>{
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
+    // must change.
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_LOCATION_SETTING = 5;
+    public static final int COL_WEATHER_CONDITION_ID = 6;
+    public static final int COL_COORD_LAT = 7;
+    public static final int COL_COORD_LONG = 8;
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background
@@ -53,19 +64,7 @@ public class ListOfWeather extends Fragment
             WeatherContract.LocationEntry.COLUMN_COORD_LAT,
             WeatherContract.LocationEntry.COLUMN_COORD_LONG
     };
-
-    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
-    // must change.
-    public static final int COL_WEATHER_ID = 0;
-    public static final int COL_WEATHER_DATE = 1;
-    public static final int COL_WEATHER_DESC = 2;
-    public static final int COL_WEATHER_MAX_TEMP = 3;
-    public static final int COL_WEATHER_MIN_TEMP = 4;
-    public static final int COL_LOCATION_SETTING = 5;
-    public static final int COL_WEATHER_CONDITION_ID = 6;
-    public static final int COL_COORD_LAT = 7;
-    public static final int COL_COORD_LONG = 8;
-
+    private static final int LOADER_ID = 1024;
     Cursor mDataList = null;
     BroadcastReceiver mReceiver;
     RecyclerView mRecyclerView;
@@ -75,8 +74,6 @@ public class ListOfWeather extends Fragment
     String mLocationSetting = "";
     Uri mWeatherForLocationUri = null;
     String mSortOrder;
-
-    private static final int LOADER_ID = 1024;
 
     public ListOfWeather() {
         // Required empty public constructor
@@ -91,7 +88,7 @@ public class ListOfWeather extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(LOADER_ID,null,this);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
     @Override
@@ -104,43 +101,33 @@ public class ListOfWeather extends Fragment
         super.onStop();
     }
 
+    public void onLocationChanged() {
+
+        updateData();
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId =item.getItemId();
+        int itemId = item.getItemId();
 
-        if(itemId == R.id.action_refresh)
-        {
+        if (itemId == R.id.action_refresh) {
             updateData();
             return true;
-        }
-        else if (itemId == R.id.action_map)
-        {
-            String pc = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.location_key),"");
+        } else if (itemId == R.id.action_map) {
+            String pc = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.location_key), "");
             Intent mapIntent = new Intent();
             mapIntent.setAction(Intent.ACTION_VIEW);
-            mapIntent.setData(Uri.parse(getString(R.string.querymap,pc)));
+            mapIntent.setData(Uri.parse(getString(R.string.querymap, pc)));
 
-            if(mapIntent.resolveActivity(getActivity().getPackageManager()) != null)
-            {
+            if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(mapIntent);
             }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onStart() {
-        //registering the receiver
-
-        IntentFilter filter =  new IntentFilter();
-        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        mReceiver = new WifiConectorReciever();
-        getActivity().registerReceiver(mReceiver,filter);
-
-        super.onStart();
-        updateData();
     }
 
     private void updateData() {
@@ -151,7 +138,7 @@ public class ListOfWeather extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.list_of_weather_fragment,menu);
+        inflater.inflate(R.menu.list_of_weather_fragment, menu);
     }
 
     @Override
@@ -161,7 +148,7 @@ public class ListOfWeather extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_list_of_weather, container, false);
 
         mManager = new LinearLayoutManager(getContext());
-        mAdapter = new ForecastAdapter(mDataList,getActivity());
+        mAdapter = new ForecastAdapter(mDataList, getActivity());
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_forecast);
         mRecyclerView.setHasFixedSize(true);
@@ -189,24 +176,10 @@ public class ListOfWeather extends Fragment
         mListener = null;
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void ClickOnItemList(Cursor item, int pos);
-    }
-
     //region Loader Implementation
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        //because this is only calle once the location doesnt change so, it dont update to teh new one
 
         String locationSetting = Utility.getPreferredLocation(getActivity());
         String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
@@ -229,7 +202,7 @@ public class ListOfWeather extends Fragment
         //Then we'll swap out the curser in our recyclerview's adapter
         // and we'll create the adapter if necessary
         if (mAdapter == null) {
-            mAdapter = new ForecastAdapter(mDataList,getActivity());
+            mAdapter = new ForecastAdapter(mDataList, getActivity());
         }
 
         mAdapter.swapCursor(data);
@@ -240,6 +213,20 @@ public class ListOfWeather extends Fragment
         //If the loader is reset, we need to clear out the
         //current cursor from the adapter.
         mAdapter.swapCursor(null);
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void ClickOnItemList(Cursor item, int pos);
     }
     //endregion
 }

@@ -10,12 +10,4 @@
     tools:context=".listaPrincipal.MainActivity"
     android:id="@+id/rootView">
 
-    <fragment
-        android:id="@+id/listFragment"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        class="mx.com.cubozsoft.sunshineapp.listaPrincipal.ListOfWeather"
-        tools:layout="@layout/fragment_list_of_weather">
-
-    </fragment>
 </RelativeLayout>
