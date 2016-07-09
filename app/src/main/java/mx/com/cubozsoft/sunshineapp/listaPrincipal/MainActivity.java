@@ -1,11 +1,16 @@
 package mx.com.cubozsoft.sunshineapp.listaPrincipal;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
+import mx.com.cubozsoft.sunshineapp.Utility;
+import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
 import mx.com.cubozsoft.sunshineapp.detalle.DetailActivity;
 import mx.com.cubozsoft.sunshineapp.detalle.DetailFragment;
 import mx.com.cubozsoft.sunshineapp.ForecastItem;
@@ -41,10 +46,20 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
     }
 
     @Override
-    public void ClickOnItemList(ForecastItem data) {
+    public void ClickOnItemList(Cursor data,int pos) {
 //        Toast.makeText(this, data.getForecast(),Toast.LENGTH_SHORT).show();
+//        Intent detailIntent = new Intent(this,DetailActivity.class);
+//        detailIntent.putExtra(DetailFragment.FORECAST_KEY,data);
+//        startActivity(detailIntent);
+        data.moveToPosition(pos);
+        long date = data.getLong(ListOfWeather.COL_WEATHER_DATE);
+        String setting = Utility.getPreferredLocation(this);
+
+        Uri uriData = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(setting,date);
+
         Intent detailIntent = new Intent(this,DetailActivity.class);
-        detailIntent.putExtra(DetailFragment.FORECAST_KEY,data);
+        detailIntent.setData(uriData);
         startActivity(detailIntent);
+
     }
 }

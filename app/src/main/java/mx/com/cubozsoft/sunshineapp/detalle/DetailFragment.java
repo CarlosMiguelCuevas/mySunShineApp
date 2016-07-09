@@ -1,6 +1,7 @@
 package mx.com.cubozsoft.sunshineapp.detalle;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -22,7 +23,7 @@ public class DetailFragment extends Fragment {
 
     public static final String FORECAST_KEY = "forecastKey";
 
-    private ForecastItem mForecast;
+    private Uri mForecast;
 
 
 
@@ -30,13 +31,17 @@ public class DetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static DetailFragment newInstance(Bundle itemBundle) {
+    public static DetailFragment newInstance(Uri data) {
         DetailFragment fragment = new DetailFragment();
-        Bundle args = itemBundle;
-        fragment.setArguments(args);
+        Uri args = data;
+        fragment.setUri(data);
         return fragment;
     }
 
+    public void setUri(Uri data)
+    {
+        mForecast = data;
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.detal_menu,menu);
@@ -50,7 +55,7 @@ public class DetailFragment extends Fragment {
         //we craete the intent with the info to share
         Intent myShareIntent = new Intent(Intent.ACTION_SEND);
         myShareIntent.setType("text/plain");
-        myShareIntent.putExtra(Intent.EXTRA_TEXT,mForecast.getForecast());
+        myShareIntent.putExtra(Intent.EXTRA_TEXT,mForecast.toString());
 
         //we set the intent to the shareactionprovider
         myShareActionProvider.setShareIntent(myShareIntent);
@@ -61,9 +66,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mForecast = (ForecastItem) getArguments().getParcelable(FORECAST_KEY);
-        }
         setHasOptionsMenu(true);
     }
 
@@ -76,8 +78,8 @@ public class DetailFragment extends Fragment {
         ImageView image =(ImageView) rootView.findViewById(R.id.iamgeDeatil);
         TextView textForecast = (TextView) rootView.findViewById(R.id.forecastDetailText);
 
-        image.setImageResource(mForecast.getImage());
-        textForecast.setText(mForecast.getForecast());
+        image.setImageResource(R.drawable.cludy);
+        textForecast.setText(mForecast.toString());
 
         return rootView;
     }

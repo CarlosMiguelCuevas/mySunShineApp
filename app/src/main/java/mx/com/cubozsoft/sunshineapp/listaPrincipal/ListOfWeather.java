@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import mx.com.cubozsoft.sunshineapp.FetchWeatherTask;
 import mx.com.cubozsoft.sunshineapp.ForecastAdapter;
@@ -167,7 +168,6 @@ public class ListOfWeather extends Fragment
         mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setAdapter(mAdapter);
 
-
         return rootView;
     }
 
@@ -201,7 +201,7 @@ public class ListOfWeather extends Fragment
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void ClickOnItemList(ForecastItem item);
+        void ClickOnItemList(Cursor item, int pos);
     }
 
     //region Loader Implementation

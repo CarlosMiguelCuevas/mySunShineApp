@@ -60,13 +60,13 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
 
         holder.mTextView.setText(convertCursorRowToUXFormat(mDataSet));
         holder.mImageView.setImageResource(getTheImage(mDataSet));
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.v(LOG_TAG,"Im tapping");
-//                mListener.ClickOnItemList(mDataSet.get(position));
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mListener.ClickOnItemList(mDataSet,position);
+            }
+        });
     }
 
     //it is used by the layout manager

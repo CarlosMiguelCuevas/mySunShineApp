@@ -1,6 +1,7 @@
 package mx.com.cubozsoft.sunshineapp.detalle;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -36,11 +37,11 @@ public class DetailActivity extends AppCompatActivity {
 
         if(savedInstanceState == null)
         {
-            Bundle forecasBundle = getIntent().getExtras();
+            Uri uriData = getIntent().getData();
 
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.detailRoot,DetailFragment.newInstance(forecasBundle),"detailforecast")
+                    .add(R.id.detailRoot,DetailFragment.newInstance(uriData),"detailforecast")
                     .commit();
         }
 
