@@ -153,8 +153,8 @@ public class DetailFragment extends Fragment
         String date = Utility.formatDate(data.getLong(COL_WEATHER_DATE));
         String weatherDesc = data.getString(COL_WEATHER_DESC);
         boolean ismetric = Utility.isMetric(getActivity());
-        String tempMax = Utility.formatTemperature(data.getDouble(COL_WEATHER_MAX_TEMP),ismetric);
-        String tempMin = Utility.formatTemperature(data.getDouble(COL_WEATHER_MIN_TEMP),ismetric);
+        String tempMax = Utility.formatTemperature(getContext(),data.getDouble(COL_WEATHER_MAX_TEMP),ismetric);
+        String tempMin = Utility.formatTemperature(getContext(),data.getDouble(COL_WEATHER_MIN_TEMP),ismetric);
 
         mForecast = String.format("%s - %s - %s/%s",date,weatherDesc,tempMax,tempMin);
 

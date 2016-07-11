@@ -56,17 +56,18 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View card;
+        int layoutId = -1;
 
         if(viewType == VIEW_TYPE_TODAY)
         {
-             card = LayoutInflater.from(mContext).inflate(R.layout.today_list_item,parent,false);
+            layoutId = R.layout.today_list_item;
         }
         else
         {
-            card = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_forecast,parent,false);
+            layoutId = R.layout.list_item_forecast;
         }
 
+        View card = LayoutInflater.from(parent.getContext()).inflate(layoutId,parent,false);
 
         return new ViewHolder(card);
     }
@@ -87,8 +88,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
 
         holder.mTextViewDate.setText(Utility.getFriendlyDayString(mContext,dateMill));
         holder.mTextViewDescription.setText(mDataSet.getString(ListOfWeather.COL_WEATHER_DESC));
-        holder.mTextViewMaxTemp.setText(Utility.formatTemperature(max,metirc));
-        holder.mTextViewMinTemp.setText(Utility.formatTemperature(min,metirc));
+        holder.mTextViewMaxTemp.setText(Utility.formatTemperature(mContext,max,metirc));
+        holder.mTextViewMinTemp.setText(Utility.formatTemperature(mContext,min,metirc));
 //        holder.mImageView.setImageResource(getTheImage(mDataSet));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
