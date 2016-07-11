@@ -15,18 +15,10 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:padding="16dp">
-        <ImageView
-            android:id="@+id/list_item_icon"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:src="@mipmap/ic_launcher"
-            android:scaleType="center"/>
-
         <LinearLayout android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:orientation="vertical"
             android:layout_weight="1"
-            >
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/list_item_date_textview"
                 android:layout_width="match_parent"
@@ -36,19 +28,6 @@
                 android:gravity="center"
                 android:layout_weight="1"/>
 
-            <TextView
-                android:id="@+id/list_item_forecast_textview"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="Cludy"
-                android:textColor="@android:color/black"
-                android:gravity="center"
-                android:layout_weight="1"/>
-        </LinearLayout>
-        <LinearLayout android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            >
             <TextView
                 android:id="@+id/list_item_high_textview"
                 android:layout_width="match_parent"
@@ -68,5 +47,26 @@
                 android:layout_weight="1"/>
 
         </LinearLayout>
+        <LinearLayout android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/list_item_icon"
+                android:layout_height="105dp"
+                android:layout_width="match_parent"
+                android:src="@mipmap/ic_launcher"
+                />
+            <TextView
+                android:id="@+id/list_item_forecast_textview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Cludy"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
     </LinearLayout>
+
 </android.support.v7.widget.CardView>

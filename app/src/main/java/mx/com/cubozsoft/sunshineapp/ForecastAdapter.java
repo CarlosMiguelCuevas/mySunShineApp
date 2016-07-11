@@ -27,7 +27,16 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     private int mRowIDColumn;
     private boolean mDataValid;
 
+    private static final int VIEW_TYPE_TODAY = 0;
+    private static final int VIEW_TYPE_FUTURE_DAY = 1;
 
+    //region deal with differents layouts
+    @Override
+    public int getItemViewType(int position) {
+        return (position == 0)? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+    }
+
+    //endregion
 
     public ForecastAdapter(Cursor mDataSet, Context context) {
         this.mDataSet = mDataSet;
@@ -47,7 +56,17 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View card = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_forecast,parent,false);
+        View card;
+
+        if(viewType == VIEW_TYPE_TODAY)
+        {
+             card = LayoutInflater.from(mContext).inflate(R.layout.today_list_item,parent,false);
+        }
+        else
+        {
+            card = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_forecast,parent,false);
+        }
+
 
         return new ViewHolder(card);
     }
@@ -56,10 +75,21 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        mDataSet.moveToPosition(position);
+        if(!mDataSet.moveToPosition(position))
+        {
+            return;
+        }
 
-        holder.mTextView.setText(convertCursorRowToUXFormat(mDataSet));
-        holder.mImageView.setImageResource(getTheImage(mDataSet));
+        boolean metirc = Utility.isMetric(mContext);
+        double min = mDataSet.getDouble(ListOfWeather.COL_WEATHER_MIN_TEMP);
+        double max = mDataSet.getDouble(ListOfWeather.COL_WEATHER_MAX_TEMP);
+        long dateMill = mDataSet.getLong(ListOfWeather.COL_WEATHER_DATE);
+
+        holder.mTextViewDate.setText(Utility.getFriendlyDayString(mContext,dateMill));
+        holder.mTextViewDescription.setText(mDataSet.getString(ListOfWeather.COL_WEATHER_DESC));
+        holder.mTextViewMaxTemp.setText(Utility.formatTemperature(max,metirc));
+        holder.mTextViewMinTemp.setText(Utility.formatTemperature(min,metirc));
+//        holder.mImageView.setImageResource(getTheImage(mDataSet));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,56 +113,62 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView mTextView;
+        public TextView mTextViewMaxTemp;
+        public TextView mTextViewMinTemp;
+        public TextView mTextViewDescription;
+        public TextView mTextViewDate;
         public ImageView mImageView;
 
 
         public ViewHolder(View parent) {
             super(parent);
-            mTextView = (TextView)parent.findViewById(R.id.list_item_forecast_textview);
-            mImageView = (ImageView)parent.findViewById(R.id.item_frescast_imageview);
+            mTextViewDate = (TextView)parent.findViewById(R.id.list_item_date_textview);
+            mTextViewDescription = (TextView)parent.findViewById(R.id.list_item_forecast_textview);
+            mTextViewMaxTemp = (TextView)parent.findViewById(R.id.list_item_high_textview);
+            mTextViewMinTemp = (TextView)parent.findViewById(R.id.list_item_low_textview);
+//            mImageView = (ImageView)parent.findViewById(R.id.list_item_icon);
         }
     }
 
-    private String convertCursorRowToUXFormat(Cursor cursor) {
+//    private String convertCursorRowToUXFormat(Cursor cursor) {
+//
+//        String highAndLow = formatHighLows(
+//                cursor.getDouble(ListOfWeather.COL_WEATHER_MAX_TEMP),
+//                cursor.getDouble(ListOfWeather.COL_WEATHER_MIN_TEMP));
+//
+//        return Utility.formatDate(cursor.getLong(ListOfWeather.COL_WEATHER_DATE)) +
+//                " - " + cursor.getString(ListOfWeather.COL_WEATHER_DESC) +
+//                " - " + highAndLow;
+//    }
 
-        String highAndLow = formatHighLows(
-                cursor.getDouble(ListOfWeather.COL_WEATHER_MAX_TEMP),
-                cursor.getDouble(ListOfWeather.COL_WEATHER_MIN_TEMP));
+//    private int getTheImage(Cursor cursor) {
+//        int idx_description = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
+//        String description = cursor.getString(idx_description);
+//        int image = 0;
+//
+//        switch(description){
+//            case "Clouds":
+//                image = R.drawable.cludy;
+//                break;
+//            case "Rain":
+//                image = R.drawable.rainy;
+//                break;
+//            case "Wind":
+//                image = R.drawable.windy;
+//                break;
+//            default:
+//                image = R.drawable.sunny;
+//                break;
+//        }
+//
+//        return image;
+//    }
 
-        return Utility.formatDate(cursor.getLong(ListOfWeather.COL_WEATHER_DATE)) +
-                " - " + cursor.getString(ListOfWeather.COL_WEATHER_DESC) +
-                " - " + highAndLow;
-    }
-
-    private int getTheImage(Cursor cursor) {
-        int idx_description = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
-        String description = cursor.getString(idx_description);
-        int image = 0;
-
-        switch(description){
-            case "Clouds":
-                image = R.drawable.cludy;
-                break;
-            case "Rain":
-                image = R.drawable.rainy;
-                break;
-            case "Wind":
-                image = R.drawable.windy;
-                break;
-            default:
-                image = R.drawable.sunny;
-                break;
-        }
-
-        return image;
-    }
-
-    private String formatHighLows(double high, double low) {
-        boolean isMetric = Utility.isMetric(mContext);
-        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
-        return highLowStr;
-    }
+//    private String formatHighLows(double high, double low) {
+//        boolean isMetric = Utility.isMetric(mContext);
+//        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
+//        return highLowStr;
+//    }
 
     public void swapCursor(Cursor newCursor) {
         if (newCursor == mDataSet) {
