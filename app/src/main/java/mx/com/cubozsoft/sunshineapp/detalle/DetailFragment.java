@@ -43,6 +43,10 @@ public class DetailFragment extends Fragment
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
+            WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
+            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+            WeatherContract.WeatherEntry.COLUMN_DEGREES
     };
 
     public static final int COL_WEATHER_ID = 0;
@@ -50,6 +54,21 @@ public class DetailFragment extends Fragment
     public static final int COL_WEATHER_DESC = 2;
     public static final int COL_WEATHER_MAX_TEMP = 3;
     public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_WEATHER_HUMIDITY = 5;
+    public static final int COL_WEATHER_WIND = 6;
+    public static final int COL_WEATHER_PRESSURE = 7;
+    public static final int COL_WEATHER_DEGREES = 8;
+
+    TextView mDetailForecast;
+    TextView mDetailMax;
+    TextView mDetailMin;
+    TextView mDetailDateDay;
+    TextView mDetailDateMonth;
+    TextView mDetailHumidity;
+    TextView mDetailWind;
+    TextView mDetailPressure;
+    ImageView mImage;
+
 
 
     final static int ID_LOADER = 0;
@@ -125,10 +144,15 @@ public class DetailFragment extends Fragment
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        ImageView image =(ImageView) rootView.findViewById(R.id.iamgeDeatil);
-        TextView textForecast = (TextView) rootView.findViewById(R.id.forecastDetailText);
-
-        image.setImageResource(R.drawable.cludy);
+        mDetailForecast = (TextView) rootView.findViewById(R.id.detail_forecast_textview);
+        mDetailMax = (TextView)rootView.findViewById(R.id.detail_high_textview);
+        mDetailMin = (TextView)rootView.findViewById(R.id.detal_low_textview);
+        mDetailDateDay = (TextView)rootView.findViewById(R.id.detail_date_day_textview);
+        mDetailDateMonth = (TextView)rootView.findViewById(R.id.detail_date_month_textview);
+        mDetailHumidity = (TextView)rootView.findViewById(R.id.detail_humidity_textView);
+        mDetailWind = (TextView)rootView.findViewById(R.id.detail_wind_textView);
+        mDetailPressure = (TextView)rootView.findViewById(R.id.detail_pressure_textView);
+        mImage =(ImageView) rootView.findViewById(R.id.detail_icon);
 
         return rootView;
     }
@@ -150,16 +174,31 @@ public class DetailFragment extends Fragment
         {
             return;
         }
-        String date = Utility.formatDate(data.getLong(COL_WEATHER_DATE));
+        long date = data.getLong(COL_WEATHER_DATE);
+        String dateDay = Utility.getDayName(getContext(),date);
+        String dateMonth = Utility.getFormattedMonthDay(getContext(),date);
         String weatherDesc = data.getString(COL_WEATHER_DESC);
         boolean ismetric = Utility.isMetric(getActivity());
         String tempMax = Utility.formatTemperature(getContext(),data.getDouble(COL_WEATHER_MAX_TEMP),ismetric);
         String tempMin = Utility.formatTemperature(getContext(),data.getDouble(COL_WEATHER_MIN_TEMP),ismetric);
+        String forecast = data.getString(COL_WEATHER_DESC);
+        float humidity = data.getFloat(COL_WEATHER_HUMIDITY);
+        float wind = data.getFloat(COL_WEATHER_WIND);
+        float pressure = data.getFloat(COL_WEATHER_PRESSURE);
+        float degrees = data.getFloat(COL_WEATHER_DEGREES);
 
         mForecast = String.format("%s - %s - %s/%s",date,weatherDesc,tempMax,tempMin);
 
-        TextView text = (TextView)getActivity().findViewById(R.id.forecastDetailText);
-        text.setText(mForecast);
+
+        mImage.setImageResource(R.mipmap.ic_launcher);
+        mDetailForecast.setText(forecast);
+        mDetailMax.setText(tempMax);
+        mDetailMin.setText(tempMin);
+        mDetailDateDay.setText(dateDay);
+        mDetailDateMonth.setText(dateMonth);
+        mDetailHumidity.setText(getString(R.string.format_humidity,humidity));
+        mDetailWind.setText(Utility.getFormattedWind(getContext(),wind,degrees));
+        mDetailPressure.setText(getString(R.string.format_pressure,pressure));
 
         if(mShareActionProvider != null)
         {
