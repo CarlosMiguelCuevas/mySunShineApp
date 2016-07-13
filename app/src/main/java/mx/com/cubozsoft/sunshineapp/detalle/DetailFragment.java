@@ -46,7 +46,8 @@ public class DetailFragment extends Fragment
             WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
             WeatherContract.WeatherEntry.COLUMN_PRESSURE,
-            WeatherContract.WeatherEntry.COLUMN_DEGREES
+            WeatherContract.WeatherEntry.COLUMN_DEGREES,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID
     };
 
     public static final int COL_WEATHER_ID = 0;
@@ -58,6 +59,7 @@ public class DetailFragment extends Fragment
     public static final int COL_WEATHER_WIND = 6;
     public static final int COL_WEATHER_PRESSURE = 7;
     public static final int COL_WEATHER_DEGREES = 8;
+    public static final int COL_WEATHER_CONDITION_ID = 9;
 
     TextView mDetailForecast;
     TextView mDetailMax;
@@ -186,11 +188,11 @@ public class DetailFragment extends Fragment
         float wind = data.getFloat(COL_WEATHER_WIND);
         float pressure = data.getFloat(COL_WEATHER_PRESSURE);
         float degrees = data.getFloat(COL_WEATHER_DEGREES);
-
+        int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
         mForecast = String.format("%s - %s - %s/%s",date,weatherDesc,tempMax,tempMin);
 
 
-        mImage.setImageResource(R.mipmap.ic_launcher);
+        mImage.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
         mDetailForecast.setText(forecast);
         mDetailMax.setText(tempMax);
         mDetailMin.setText(tempMin);

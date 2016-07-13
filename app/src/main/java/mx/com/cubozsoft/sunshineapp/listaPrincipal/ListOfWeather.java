@@ -47,6 +47,7 @@ public class ListOfWeather extends Fragment
     public static final int COL_WEATHER_CONDITION_ID = 6;
     public static final int COL_COORD_LAT = 7;
     public static final int COL_COORD_LONG = 8;
+
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background

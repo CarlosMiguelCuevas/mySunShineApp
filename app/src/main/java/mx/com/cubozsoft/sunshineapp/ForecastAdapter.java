@@ -90,7 +90,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         holder.mTextViewDescription.setText(mDataSet.getString(ListOfWeather.COL_WEATHER_DESC));
         holder.mTextViewMaxTemp.setText(Utility.formatTemperature(mContext,max,metirc));
         holder.mTextViewMinTemp.setText(Utility.formatTemperature(mContext,min,metirc));
-//        holder.mImageView.setImageResource(getTheImage(mDataSet));
+
+        int weatherId = mDataSet.getInt(ListOfWeather.COL_WEATHER_CONDITION_ID);
+
+        int imageResorce = (getItemViewType(position) == VIEW_TYPE_TODAY)?
+                Utility.getArtResourceForWeatherCondition(weatherId) :
+                Utility.getIconResourceForWeatherCondition(weatherId) ;
+
+        holder.mImageView.setImageResource(imageResorce);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +134,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
             mTextViewDescription = (TextView)parent.findViewById(R.id.list_item_forecast_textview);
             mTextViewMaxTemp = (TextView)parent.findViewById(R.id.list_item_high_textview);
             mTextViewMinTemp = (TextView)parent.findViewById(R.id.list_item_low_textview);
-//            mImageView = (ImageView)parent.findViewById(R.id.list_item_icon);
+            mImageView = (ImageView)parent.findViewById(R.id.list_item_icon);
         }
     }
 
