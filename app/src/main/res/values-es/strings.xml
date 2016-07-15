@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">SunShineApp</string>
     <string name="settings">configuracion</string>
     <string name="today">Hoy</string>
@@ -7,4 +7,9 @@
     <string name="Location">Lugar</string>
     <string name="units">unidades</string>
     <string name="map">mapa</string>
+    <string name="share_title_menu">compartir</string>
+    <string name="format_wind_mph">Viento: <xliff:g id="speed">%1$1.0f</xliff:g> mph <xliff:g id="direction">%2$s</xliff:g></string>
+    <string name="format_wind_kmh">Viento: <xliff:g id="speed">%1$1.0f</xliff:g> km/h <xliff:g id="direction">%2$s</xliff:g></string>
+    <string name="format_pressure">Presión: <xliff:g id="pressure">%1.0f</xliff:g> hPa</string>
+    <string name="format_humidity">Humedad: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
 </resources>

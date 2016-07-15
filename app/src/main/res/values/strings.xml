@@ -11,17 +11,17 @@
     <string name="pref_units_key" translatable="false">units_key</string>
     <string name="default_value_list_units" translatable="false">m</string>
     <string name="map">map</string>
-    <string name="querymap">geo:0,0?q=<xliff:g id="cp_preferences" example="83068">%s</xliff:g></string>
+    <string name="querymap" translatable="false">geo:0,0?q=<xliff:g id="cp_preferences" example="83068">%s</xliff:g></string>
     <string name="share_title_menu">share</string>
-    <string name="pref_units_metric">m</string>
+    <string name="pref_units_metric" translatable="false">m</string>
     <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
     <string name="today">Today</string>
     <!-- Date label when displaying tomorrow's weather forecast [CHAR LIMIT=20] -->
     <string name="tomorrow">Tomorrow</string>
     <!-- Date format for displaying day of week and date (i.e. Mon Jun 1) [CHAR LIMIT=20] -->
-    <string name="format_full_friendly_date"><xliff:g id="day">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g></string>
+    <string name="format_full_friendly_date" translatable="false"><xliff:g id="day">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g></string>
     <!--Temp format for displaying temperature of day-->
-    <string name="format_temperature"><xliff:g id="form_temp" example="23">%1.0f</xliff:g>\u00B0</string>
+    <string name="format_temperature" translatable="false"><xliff:g id="form_temp" example="23">%1.0f</xliff:g>\u00B0</string>
 
     <!-- Windspeed formats -->
     <!-- Wind in mph [CHAR LIMIT=25] -->

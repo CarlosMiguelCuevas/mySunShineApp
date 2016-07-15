@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,7 +22,8 @@ import mx.com.cubozsoft.sunshineapp.settings.SettingsActivity;
 public class MainActivity extends AppCompatActivity implements ListOfWeather.OnFragmentInteractionListener{
 
     private String mLocation;
-    private String FORECASTLISTFRAGMENT_TAG = "FLF";
+    private String FORECASTDETAILFRAGMENT_TAG = "FDF";
+    private boolean mTwoPane = false;
 
     @Override
     protected void onResume() {
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
         if(!mLocation.equals(actialSettingLocation))
         {
             //it has change
-            ListOfWeather forecastf =(ListOfWeather) getSupportFragmentManager().findFragmentByTag(FORECASTLISTFRAGMENT_TAG);
+            ListOfWeather forecastf =(ListOfWeather) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
             forecastf.onLocationChanged();
             mLocation = actialSettingLocation;
         }
@@ -42,11 +44,20 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
         setContentView(R.layout.activity_main);
         mLocation = Utility.getPreferredLocation(this);
 
-        if(savedInstanceState == null)
+        if(findViewById(R.id.weather_detail_container) != null) {
+            mTwoPane = true;
+
+            if(savedInstanceState == null) {
+                FragmentManager fragMan = getSupportFragmentManager();
+                fragMan.beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailFragment(), FORECASTDETAILFRAGMENT_TAG)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        }
+        else
         {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.rootView,new ListOfWeather(),FORECASTLISTFRAGMENT_TAG)
-                    .commit();
+            mTwoPane = false;
         }
 
     }

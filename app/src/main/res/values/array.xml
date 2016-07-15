@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="units_temp_name_array">
+    <string-array translatable="false" name="units_temp_name_array">
         <item>imperials</item>
         <item>metric</item>
     </string-array>
-    <string-array name="units_temp_value_array">
+    <string-array translatable="false" name="units_temp_value_array">
         <item>i</item>
         <item>m</item>
     </string-array>

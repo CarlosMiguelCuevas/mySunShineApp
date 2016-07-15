@@ -78,7 +78,7 @@ public class DetailFragment extends Fragment
     public static final String FORECAST_KEY = "forecastKey";
 
     private String mForecast;
-    private Uri uriData;
+    private Uri mUriData = null;
     private ShareActionProvider mShareActionProvider;
 
 
@@ -102,7 +102,7 @@ public class DetailFragment extends Fragment
 
     public void setUri(Uri data)
     {
-        uriData = data;
+        mUriData = data;
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -161,8 +161,13 @@ public class DetailFragment extends Fragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        if(mUriData == null) {
+            return null;
+        }
+
         return new CursorLoader(getActivity(),
-                uriData,
+                mUriData,
                 FORECAST_COLUMNS,
                 null,
                 null,
