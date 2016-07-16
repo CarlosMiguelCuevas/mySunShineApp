@@ -73,8 +73,8 @@ public class DetailFragment extends Fragment
 
 
 
-    final static int ID_LOADER = 0;
-
+    private final static int ID_LOADER = 0;
+    private final static String URI_GETTER = "geturi";
     public static final String FORECAST_KEY = "forecastKey";
 
     private String mForecast;
@@ -87,6 +87,14 @@ public class DetailFragment extends Fragment
         // Required empty public constructor
     }
 
+    public void onLocationChanged(String location) {
+
+        long date = WeatherContract.WeatherEntry.getDateFromUri(mUriData);
+        Uri newUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location,date);
+        mUriData = newUri;
+        getLoaderManager().restartLoader(ID_LOADER,null,this);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -95,15 +103,12 @@ public class DetailFragment extends Fragment
 
     public static DetailFragment newInstance(Uri data) {
         DetailFragment fragment = new DetailFragment();
-        Uri args = data;
-        fragment.setUri(data);
+        Bundle args = new Bundle();
+        args.putParcelable(URI_GETTER,data);
+        fragment.setArguments(args);
         return fragment;
     }
 
-    public void setUri(Uri data)
-    {
-        mUriData = data;
-    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.detal_menu,menu);
@@ -138,6 +143,12 @@ public class DetailFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        Bundle args = getArguments();
+        if(args != null)
+        {
+            mUriData = args.getParcelable(URI_GETTER);
+        }
     }
 
     @Override
@@ -219,4 +230,5 @@ public class DetailFragment extends Fragment
 
 
     }
+
 }

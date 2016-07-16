@@ -156,6 +156,7 @@ public class ListOfWeather extends Fragment
         mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setAdapter(mAdapter);
 
+
         return rootView;
     }
 

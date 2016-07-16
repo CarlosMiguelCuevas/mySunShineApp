@@ -28,13 +28,26 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
     @Override
     protected void onResume() {
         super.onResume();
-        String actialSettingLocation = Utility.getPreferredLocation(this);
-        if(!mLocation.equals(actialSettingLocation))
+        String actualSettingLocation = Utility.getPreferredLocation(this);
+        if(!mLocation.equals(actualSettingLocation))
         {
-            //it has change
-            ListOfWeather forecastf =(ListOfWeather) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+            //it has change, this code handles the forecast List
+            ListOfWeather forecastf =(ListOfWeather) getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment_forecast);
+
             forecastf.onLocationChanged();
-            mLocation = actialSettingLocation;
+
+
+            //this handles the detail in case it is two pane
+            if(mTwoPane)
+            {
+                DetailFragment detail = (DetailFragment) getSupportFragmentManager()
+                        .findFragmentByTag(FORECASTDETAILFRAGMENT_TAG);
+
+                detail.onLocationChanged(actualSettingLocation);
+            }
+
+            mLocation = actualSettingLocation;
         }
     }
 
@@ -93,9 +106,22 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
 
         Uri uriData = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(setting,date);
 
-        Intent detailIntent = new Intent(this,DetailActivity.class);
-        detailIntent.setData(uriData);
-        startActivity(detailIntent);
+        if(mTwoPane)
+        {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.weather_detail_container,
+                            DetailFragment.newInstance(uriData),
+                            FORECASTDETAILFRAGMENT_TAG)
+                    .commit();
+        }
+        else
+        {
+            Intent detailIntent = new Intent(this,DetailActivity.class);
+            detailIntent.setData(uriData);
+            startActivity(detailIntent);
+        }
+
 
     }
 }

@@ -14,14 +14,12 @@
             android:id="@+id/detail_date_day_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Today"
             android:textColor="@android:color/black"
             />
         <TextView
             android:id="@+id/detail_date_month_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Febr, 07"
             android:textColor="@android:color/black"
             />
 
@@ -39,14 +37,12 @@
                     android:id="@+id/detail_high_textview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="32"
                     android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/detal_low_textview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="25"
                     android:textColor="@android:color/black"/>
             </LinearLayout>
             <LinearLayout android:layout_height="match_parent"
@@ -64,7 +60,6 @@
                     android:id="@+id/detail_forecast_textview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cludy"
                     android:textColor="@android:color/black"
                     android:gravity="center" />
 
@@ -75,21 +70,18 @@
             android:id="@+id/detail_humidity_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Humidity 81%"
             android:textColor="@android:color/black"
             />
         <TextView
             android:id="@+id/detail_wind_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Wind: 2 km/h"
             android:textColor="@android:color/black"
             />
         <TextView
             android:id="@+id/detail_pressure_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pressure: 1017 hPa"
             android:textColor="@android:color/black"
             />
 
