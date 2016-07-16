@@ -13,6 +13,7 @@
     tools:context="mx.com.cubozsoft.sunshineapp.listaPrincipal.MainActivity"
     tools:layout="@layout/fragment_list_of_weather">
 
+
 </fragment>
 
 

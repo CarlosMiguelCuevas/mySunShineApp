@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ import mx.com.cubozsoft.sunshineapp.listaPrincipal.ListOfWeather;
 /**
  * Created by carlos on 19/06/16.
  */
-public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHolder>{
+public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHolder>{
+
     private final String LOG_TAG = ForecastAdapter.class.getSimpleName();
-    private Cursor mDataSet = null;
     private ListOfWeather.OnFragmentInteractionListener mListener;
     private Context mContext;
     private int mRowIDColumn;
@@ -39,7 +40,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     //endregion
 
     public ForecastAdapter(Cursor mDataSet, Context context) {
-        this.mDataSet = mDataSet;
+        super(mDataSet);
+
         if(context instanceof ListOfWeather.OnFragmentInteractionListener)
         {
             this.mListener = (ListOfWeather.OnFragmentInteractionListener) context;
@@ -49,7 +51,6 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         {
             throw new ClassCastException(context.toString() + " must implement OnFragmentInteractionListener.");
         }
-
     }
 
     //it is used by the layout manager. simply create the object of the view holder
@@ -75,47 +76,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     //it is used byt the layout manager to replace the data
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-
-        if(!mDataSet.moveToPosition(position))
-        {
-            return;
-        }
-
-        boolean metirc = Utility.isMetric(mContext);
-        double min = mDataSet.getDouble(ListOfWeather.COL_WEATHER_MIN_TEMP);
-        double max = mDataSet.getDouble(ListOfWeather.COL_WEATHER_MAX_TEMP);
-        long dateMill = mDataSet.getLong(ListOfWeather.COL_WEATHER_DATE);
-
-        holder.mTextViewDate.setText(Utility.getFriendlyDayString(mContext,dateMill));
-        holder.mTextViewDescription.setText(mDataSet.getString(ListOfWeather.COL_WEATHER_DESC));
-        holder.mTextViewMaxTemp.setText(Utility.formatTemperature(mContext,max,metirc));
-        holder.mTextViewMinTemp.setText(Utility.formatTemperature(mContext,min,metirc));
-
-        int weatherId = mDataSet.getInt(ListOfWeather.COL_WEATHER_CONDITION_ID);
-
-        int imageResorce = (getItemViewType(position) == VIEW_TYPE_TODAY)?
-                Utility.getArtResourceForWeatherCondition(weatherId) :
-                Utility.getIconResourceForWeatherCondition(weatherId) ;
-
-        holder.mImageView.setImageResource(imageResorce);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mListener.ClickOnItemList(mDataSet,position);
-            }
-        });
-    }
-
-    //it is used by the layout manager
-    @Override
-    public int getItemCount() {
-
-        if (mDataValid) {
-            return mDataSet.getCount();
-        } else {
-            return 0;
-        }
+        super.onBindViewHolder(holder,position);
 
     }
 
@@ -138,64 +99,37 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         }
     }
 
-//    private String convertCursorRowToUXFormat(Cursor cursor) {
-//
-//        String highAndLow = formatHighLows(
-//                cursor.getDouble(ListOfWeather.COL_WEATHER_MAX_TEMP),
-//                cursor.getDouble(ListOfWeather.COL_WEATHER_MIN_TEMP));
-//
-//        return Utility.formatDate(cursor.getLong(ListOfWeather.COL_WEATHER_DATE)) +
-//                " - " + cursor.getString(ListOfWeather.COL_WEATHER_DESC) +
-//                " - " + highAndLow;
-//    }
 
-//    private int getTheImage(Cursor cursor) {
-//        int idx_description = cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC);
-//        String description = cursor.getString(idx_description);
-//        int image = 0;
-//
-//        switch(description){
-//            case "Clouds":
-//                image = R.drawable.cludy;
-//                break;
-//            case "Rain":
-//                image = R.drawable.rainy;
-//                break;
-//            case "Wind":
-//                image = R.drawable.windy;
-//                break;
-//            default:
-//                image = R.drawable.sunny;
-//                break;
-//        }
-//
-//        return image;
-//    }
-
-//    private String formatHighLows(double high, double low) {
-//        boolean isMetric = Utility.isMetric(mContext);
-//        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
-//        return highLowStr;
-//    }
-
-    public void swapCursor(Cursor newCursor) {
-        if (newCursor == mDataSet) {
-            return;
-        }
-
-        if (newCursor != null) {
-            mDataSet = newCursor;
-            mRowIDColumn = mDataSet.getColumnIndexOrThrow("_id");
-            mDataValid = true;
-            // notify the observers about the new cursor
-            notifyDataSetChanged();
-        } else {
-            notifyItemRangeRemoved(0, getItemCount());
-            mDataSet = null;
-            mRowIDColumn = -1;
-            mDataValid = false;
-        }
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 
+    @Override
+    public void onBindViewHolder(ViewHolder holder, final Cursor cursor, final int position) {
+        boolean metirc = Utility.isMetric(mContext);
+        double min = cursor.getDouble(ListOfWeather.COL_WEATHER_MIN_TEMP);
+        double max = cursor.getDouble(ListOfWeather.COL_WEATHER_MAX_TEMP);
+        long dateMill = cursor.getLong(ListOfWeather.COL_WEATHER_DATE);
 
+        holder.mTextViewDate.setText(Utility.getFriendlyDayString(mContext,dateMill));
+        holder.mTextViewDescription.setText(cursor.getString(ListOfWeather.COL_WEATHER_DESC));
+        holder.mTextViewMaxTemp.setText(Utility.formatTemperature(mContext,max,metirc));
+        holder.mTextViewMinTemp.setText(Utility.formatTemperature(mContext,min,metirc));
+
+        int weatherId = cursor.getInt(ListOfWeather.COL_WEATHER_CONDITION_ID);
+
+        int imageResorce = (getItemViewType(position) == VIEW_TYPE_TODAY)?
+                Utility.getArtResourceForWeatherCondition(weatherId) :
+                Utility.getIconResourceForWeatherCondition(weatherId) ;
+
+        holder.mImageView.setImageResource(imageResorce);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mListener.ClickOnItemList(cursor,position);
+            }
+        });
+    }
 }
