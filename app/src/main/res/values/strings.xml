@@ -40,5 +40,6 @@
     <!-- Humidity format CHAR LIMIT=25]-->
     <string name="format_humidity">Humidity: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
     <string name="noForecast">There in no Forecast to show</string>
+    <string name="DatailName">Details</string>
 
 </resources>

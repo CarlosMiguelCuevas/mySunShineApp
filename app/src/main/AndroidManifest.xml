@@ -26,15 +26,20 @@
             <!--</intent-filter>-->
         <!--</receiver>-->
 
-        <activity android:name=".listaPrincipal.MainActivity">
+        <activity android:name=".listaPrincipal.MainActivity"
+            android:theme="@style/ForecastTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".detalle.DetailActivity" />
-        <activity android:name=".settings.SettingsActivity"></activity>
+
+        <activity android:name=".detalle.DetailActivity"
+            android:label="@string/DatailName"/>
+
+        <activity android:name=".settings.SettingsActivity"
+            android:label="@string/settings"/>
 
         <provider android:authorities="com.example.android.sunshine.app"
             android:name=".data.WeatherProvider"/>

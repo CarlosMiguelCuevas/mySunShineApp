@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
         else
         {
             mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
         }
 
         ListOfWeather list = (ListOfWeather) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
