@@ -27,14 +27,19 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
     private Context mContext;
     private int mRowIDColumn;
     private boolean mDataValid;
-
+    private boolean mUseTodayLayout;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
+
+
+    public void setSpecialLayoutUsage(boolean specialLayoutUsage) {
+        this.mUseTodayLayout = specialLayoutUsage;
+    }
 
     //region deal with differents layouts
     @Override
     public int getItemViewType(int position) {
-        return (position == 0)? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        return (position == 0 && mUseTodayLayout)? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 
     //endregion

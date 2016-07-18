@@ -67,11 +67,15 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
                         .addToBackStack(null)
                         .commit();
             }
+
         }
         else
         {
             mTwoPane = false;
         }
+
+        ListOfWeather list = (ListOfWeather) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+        list.setUseTodayLayout(!mTwoPane);
 
     }
 

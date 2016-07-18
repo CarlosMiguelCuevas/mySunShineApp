@@ -75,6 +75,7 @@ public class ListOfWeather extends Fragment
     String mLocationSetting = "";
     Uri mWeatherForLocationUri = null;
     String mSortOrder;
+    private boolean mUseTodayLayout;
 
     public ListOfWeather() {
         // Required empty public constructor
@@ -150,6 +151,7 @@ public class ListOfWeather extends Fragment
 
         mManager = new LinearLayoutManager(getContext());
         mAdapter = new ForecastAdapter(mDataList, getActivity());
+        mAdapter.setSpecialLayoutUsage(mUseTodayLayout);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_forecast);
         mRecyclerView.setHasFixedSize(true);
@@ -215,6 +217,15 @@ public class ListOfWeather extends Fragment
         //If the loader is reset, we need to clear out the
         //current cursor from the adapter.
         mAdapter.swapCursor(null);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        mUseTodayLayout = useTodayLayout;
+        
+        if(mAdapter != null)
+        {
+            mAdapter.setSpecialLayoutUsage(mUseTodayLayout);
+        }
     }
 
     /**
