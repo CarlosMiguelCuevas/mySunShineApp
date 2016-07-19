@@ -18,13 +18,17 @@
                 android:id="@+id/detail_date_day_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:text="tuesday"
+                style="@style/commonStyleText"
+                android:textSize="24sp"
                 />
             <TextView
                 android:id="@+id/detail_date_month_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:text="june 34"
+                style="@style/commonStyleText_gray"
+                android:textSize="20sp"
                 />
         </LinearLayout>
 
@@ -37,52 +41,65 @@
                 android:id="@+id/detail_high_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                style="@style/commonStyleText"
+                android:textSize="96sp"
+                android:fontFamily="sans-serif-light"
+                android:text="14"
                 />
 
             <TextView
                 android:id="@+id/detal_low_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                style="@style/commonStyleText_gray"
+                android:textSize="48sp"
+                android:fontFamily="sans-serif-light"
+                android:text="14"
+                android:layout_marginBottom="48dp"
                 />
 
             <TextView
                 android:id="@+id/detail_humidity_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                style="@style/extraInfo_detail"
+                android:text="humidity"
                 />
             <TextView
                 android:id="@+id/detail_wind_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                style="@style/extraInfo_detail"
+                android:text="presure"
                 />
             <TextView
                 android:id="@+id/detail_pressure_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                style="@style/extraInfo_detail"
+                android:text="wind"
                 />
         </LinearLayout>
         <LinearLayout android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="top">
             <ImageView
                 android:id="@+id/detail_icon"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:src="@drawable/art_fog"
                 />
 
             <TextView
                 android:id="@+id/detail_forecast_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:gravity="center" />
+                style="@style/commonStyleText_gray"
+                android:textSize="22sp"
+                android:gravity="center"
+                android:text="fog"/>
 
         </LinearLayout>
     </LinearLayout>

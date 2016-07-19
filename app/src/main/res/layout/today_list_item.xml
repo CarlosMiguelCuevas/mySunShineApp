@@ -24,26 +24,27 @@
             android:fontFamily="sans-serif-condensed"
             android:gravity="center_vertical"
             android:textAppearance="?android:textAppearanceLarge"
-            android:textColor="@android:color/white" />
+            style="@style/commonStyleText_wite" />
 
         <TextView
             android:id="@+id/list_item_high_textview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-light"
             android:gravity="center_vertical"
-            android:textColor="@android:color/white"
-            android:textSize="72sp" />
+            style="@style/commonStyleText_wite"
+            android:textSize="72sp"
+            />
 
         <TextView
             android:id="@+id/list_item_low_textview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-light"
             android:gravity="center_vertical"
-            android:textColor="@android:color/white"
+            style="@style/commonStyleText_wite"
             android:textSize="36sp" />
 
     </LinearLayout>
@@ -72,10 +73,9 @@
             android:id="@+id/list_item_forecast_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
             android:gravity="center_horizontal|bottom"
             android:textAppearance="?android:textAppearanceLarge"
-            android:textColor="@android:color/white" />
+            style="@style/commonStyleText_wite" />
 
     </LinearLayout>
 </LinearLayout>

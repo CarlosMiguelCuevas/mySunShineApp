@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -26,6 +26,31 @@
 
     <!-- Settings activity theme. -->
     <style name="SettingsTheme" parent="AppTheme">
+    </style>
+
+    <!--styles-->
+    <style name="commonStyleText">
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-condensed</item>
+        <item name="android:textColor">@android:color/black</item>
+
+    </style>
+    <style name="commonStyleText_wite" parent="commonStyleText">
+
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
+    <style name="commonStyleText_gray" parent="commonStyleText">
+
+        <item name="android:textColor">#646464</item>
+
+    </style>
+
+    <style name="extraInfo_detail" parent="commonStyleText">
+
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">sans-serif-light</item>
+        <item name="android:textSize" >22sp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+
     </style>
 
 </resources>
