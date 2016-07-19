@@ -209,9 +209,14 @@ public class DetailFragment extends Fragment
 
 
         mImage.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+        mImage.setContentDescription(getContext().getString(R.string.forecast_accessibility,forecast));
         mDetailForecast.setText(forecast);
         mDetailMax.setText(tempMax);
+        mDetailMax.setContentDescription(String.format("%s %s",getContext()
+                .getString(R.string.MAXTemp_accessibility),tempMax));
         mDetailMin.setText(tempMin);
+        mDetailMin.setContentDescription(String.format("%s %s",getContext()
+                .getString(R.string.MinTemp_accessibility),tempMin));
         mDetailDateDay.setText(dateDay);
         mDetailDateMonth.setText(dateMonth);
         mDetailHumidity.setText(getString(R.string.format_humidity,humidity));

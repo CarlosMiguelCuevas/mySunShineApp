@@ -14,4 +14,7 @@
     <string name="format_humidity">Humedad: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
     <string name="noForecast">no hay pronosticos para mostrar</string>
     <string name="DatailName">Detalles</string>
+    <string name="MAXTemp_accessibility">temperatura máxima</string>
+    <string name="MinTemp_accessibility">temperatura mínima</string>
+    <string name="forecast_accessibility">Hoy será un dia <xliff:g id="forecast" example="lluvioso">%s</xliff:g></string>
 </resources>

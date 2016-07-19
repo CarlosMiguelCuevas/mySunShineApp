@@ -67,7 +67,8 @@
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:textAppearance="?android:textAppearanceLarge"
-                style="@style/commonStyleText" />
+                style="@style/commonStyleText"
+                />
 
             <TextView
                 android:id="@+id/list_item_low_textview"
@@ -77,7 +78,8 @@
                 android:fontFamily="sans-serif-condensed"
                 android:gravity="center"
                 android:textAppearance="?android:textAppearanceSmall"
-                style="@style/commonStyleText"/>
+                style="@style/commonStyleText"
+                />
 
         </LinearLayout>
     </LinearLayout>

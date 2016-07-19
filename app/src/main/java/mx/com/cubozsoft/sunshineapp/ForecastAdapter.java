@@ -115,18 +115,25 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
         boolean metirc = Utility.isMetric(mContext);
         double min = cursor.getDouble(ListOfWeather.COL_WEATHER_MIN_TEMP);
         double max = cursor.getDouble(ListOfWeather.COL_WEATHER_MAX_TEMP);
+        String minRounded = Utility.formatTemperature(mContext,min,metirc);
+        String maxRounded = Utility.formatTemperature(mContext,max,metirc);
         long dateMill = cursor.getLong(ListOfWeather.COL_WEATHER_DATE);
+        String maxDescription = String.format("%s %s",mContext.getString(R.string.MAXTemp_accessibility),maxRounded);
+        String minDescription = String.format("%s %s",mContext.getString(R.string.MinTemp_accessibility),minRounded);
 
         holder.mTextViewDate.setText(Utility.getFriendlyDayString(mContext,dateMill));
         holder.mTextViewDescription.setText(cursor.getString(ListOfWeather.COL_WEATHER_DESC));
-        holder.mTextViewMaxTemp.setText(Utility.formatTemperature(mContext,max,metirc));
-        holder.mTextViewMinTemp.setText(Utility.formatTemperature(mContext,min,metirc));
+        holder.mTextViewMaxTemp.setText(maxRounded);
+        holder.mTextViewMaxTemp.setContentDescription(maxDescription);
+        holder.mTextViewMinTemp.setText(minRounded);
+        holder.mTextViewMinTemp.setContentDescription(minDescription);
 
         int weatherId = cursor.getInt(ListOfWeather.COL_WEATHER_CONDITION_ID);
 
         int imageResorce = (getItemViewType(position) == VIEW_TYPE_TODAY)?
                 Utility.getArtResourceForWeatherCondition(weatherId) :
                 Utility.getIconResourceForWeatherCondition(weatherId) ;
+
 
         holder.mImageView.setImageResource(imageResorce);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

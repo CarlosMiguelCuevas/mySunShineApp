@@ -42,4 +42,8 @@
     <string name="noForecast">There in no Forecast to show</string>
     <string name="DatailName">Details</string>
 
+    <string name="MAXTemp_accessibility">Max temperature</string>
+    <string name="MinTemp_accessibility">Min temperature</string>
+    <string name="forecast_accessibility">Today will be <xliff:g id="forecast" example="clear">%s</xliff:g></string>
+
 </resources>
