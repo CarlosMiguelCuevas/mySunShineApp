@@ -24,5 +24,8 @@
         for two-pane layout -->
     </style>
 
+    <!-- Settings activity theme. -->
+    <style name="SettingsTheme" parent="AppTheme">
+    </style>
 
 </resources>
