@@ -31,10 +31,14 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
     private View mSelectedItem;
-
+    private int mSelectedPossition = -1;
 
     public void setSpecialLayoutUsage(boolean specialLayoutUsage) {
         this.mUseTodayLayout = specialLayoutUsage;
+    }
+
+    public void setSavedPosition(int savedPosition) {
+        this.mSelectedPossition = savedPosition;
     }
 
     //region deal with differents layouts
@@ -83,32 +87,12 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         super.onBindViewHolder(holder,position);
-
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public TextView mTextViewMaxTemp;
-        public TextView mTextViewMinTemp;
-        public TextView mTextViewDescription;
-        public TextView mTextViewDate;
-        public ImageView mImageView;
-
-
-        public ViewHolder(View parent) {
-            super(parent);
-            mTextViewDate = (TextView)parent.findViewById(R.id.list_item_date_textview);
-            mTextViewDescription = (TextView)parent.findViewById(R.id.list_item_forecast_textview);
-            mTextViewMaxTemp = (TextView)parent.findViewById(R.id.list_item_high_textview);
-            mTextViewMinTemp = (TextView)parent.findViewById(R.id.list_item_low_textview);
-            mImageView = (ImageView)parent.findViewById(R.id.list_item_icon);
+        if(mSelectedPossition == position)
+        {
+            holder.itemView.setSelected(true);
+            mSelectedItem = holder.itemView;
         }
-    }
 
-
-    @Override
-    public long getItemId(int position) {
-        return super.getItemId(position);
     }
 
     @Override
@@ -140,7 +124,7 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSelectedItem != null && !mSelectedItem.equals(v) && !mUseTodayLayout)
+                if(!mSelectedItem.equals(null) && mSelectedPossition != position && !mUseTodayLayout)
                 {
                     mSelectedItem.setSelected(false);
 
@@ -148,11 +132,36 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
                 if(!mUseTodayLayout) //in case it is TwoPane
                 {
                     mSelectedItem = v;
+                    mSelectedPossition = position;
                     v.setSelected(true);
                 }
 
                 mListener.ClickOnItemList(cursor,position);
             }
         });
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public TextView mTextViewMaxTemp;
+        public TextView mTextViewMinTemp;
+        public TextView mTextViewDescription;
+        public TextView mTextViewDate;
+        public ImageView mImageView;
+
+
+        public ViewHolder(View parent) {
+            super(parent);
+            mTextViewDate = (TextView)parent.findViewById(R.id.list_item_date_textview);
+            mTextViewDescription = (TextView)parent.findViewById(R.id.list_item_forecast_textview);
+            mTextViewMaxTemp = (TextView)parent.findViewById(R.id.list_item_high_textview);
+            mTextViewMinTemp = (TextView)parent.findViewById(R.id.list_item_low_textview);
+            mImageView = (ImageView)parent.findViewById(R.id.list_item_icon);
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 }

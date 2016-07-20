@@ -76,6 +76,7 @@ public class ListOfWeather extends Fragment
     Uri mWeatherForLocationUri = null;
     String mSortOrder;
     private boolean mUseTodayLayout;
+    private int mSavedSelecteditem;
 
     public ListOfWeather() {
         // Required empty public constructor
@@ -152,6 +153,7 @@ public class ListOfWeather extends Fragment
         mManager = new LinearLayoutManager(getContext());
         mAdapter = new ForecastAdapter(mDataList, getActivity());
         mAdapter.setSpecialLayoutUsage(mUseTodayLayout);
+        mAdapter.setSavedPosition(mSavedSelecteditem);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_forecast);
         mRecyclerView.setHasFixedSize(true);
@@ -210,6 +212,7 @@ public class ListOfWeather extends Fragment
         }
 
         mAdapter.swapCursor(data);
+        mManager.scrollToPosition(mSavedSelecteditem);
     }
 
     @Override
@@ -225,6 +228,15 @@ public class ListOfWeather extends Fragment
         if(mAdapter != null)
         {
             mAdapter.setSpecialLayoutUsage(mUseTodayLayout);
+        }
+    }
+
+    public void setSelecteditem(int selecteditem) {
+        this.mSavedSelecteditem = selecteditem;
+
+        if(mAdapter != null)
+        {
+            mAdapter.setSavedPosition(mSavedSelecteditem);
         }
     }
 

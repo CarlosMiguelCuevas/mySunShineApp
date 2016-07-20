@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
     private String mLocation;
     private String FORECASTDETAILFRAGMENT_TAG = "FDF";
     private boolean mTwoPane = false;
+    private int mActualPosition = 0;
+    private static String SAVED_POSITION_KEY = "savedposition";
 
     @Override
     protected void onResume() {
@@ -54,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null)
+        {
+            mActualPosition = savedInstanceState.getInt(SAVED_POSITION_KEY);
+        }
         setContentView(R.layout.activity_main);
         mLocation = Utility.getPreferredLocation(this);
 
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
 
         ListOfWeather list = (ListOfWeather) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
         list.setUseTodayLayout(!mTwoPane);
+        list.setSelecteditem(mActualPosition);
 
     }
 
@@ -105,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
 //        Intent detailIntent = new Intent(this,DetailActivity.class);
 //        detailIntent.putExtra(DetailFragment.FORECAST_KEY,data);
 //        startActivity(detailIntent);
+        mActualPosition = pos;
         data.moveToPosition(pos);
         long date = data.getLong(ListOfWeather.COL_WEATHER_DATE);
         String setting = Utility.getPreferredLocation(this);
@@ -126,7 +135,11 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
             detailIntent.setData(uriData);
             startActivity(detailIntent);
         }
+    }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SAVED_POSITION_KEY,mActualPosition);
+        super.onSaveInstanceState(outState);
     }
 }
