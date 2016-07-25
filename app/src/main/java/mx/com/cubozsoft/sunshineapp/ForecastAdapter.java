@@ -30,7 +30,6 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
     private boolean mUseTodayLayout;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
-    private View mSelectedItem;
 
 
     public void setSpecialLayoutUsage(boolean specialLayoutUsage) {
@@ -140,16 +139,6 @@ public class ForecastAdapter extends AbstractRecyclerView<ForecastAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSelectedItem != null && !mSelectedItem.equals(v) && !mUseTodayLayout)
-                {
-                    mSelectedItem.setSelected(false);
-
-                }
-                if(!mUseTodayLayout) //in case it is TwoPane
-                {
-                    mSelectedItem = v;
-                    v.setSelected(true);
-                }
 
                 mListener.ClickOnItemList(cursor,position);
             }
