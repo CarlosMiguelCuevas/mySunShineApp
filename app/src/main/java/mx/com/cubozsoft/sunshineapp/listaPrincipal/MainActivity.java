@@ -22,8 +22,11 @@ import mx.com.cubozsoft.sunshineapp.settings.SettingsActivity;
 public class MainActivity extends AppCompatActivity implements ListOfWeather.OnFragmentInteractionListener{
 
     private String mLocation;
+    private int mSavedItemSelected = 0;
     private String FORECASTDETAILFRAGMENT_TAG = "FDF";
     private boolean mTwoPane = false;
+    private String SAVE_ITEM_KEY = "saveselecteditem";
+
 
     @Override
     protected void onResume() {
@@ -45,10 +48,17 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
                         .findFragmentByTag(FORECASTDETAILFRAGMENT_TAG);
 
                 detail.onLocationChanged(actualSettingLocation);
+
             }
 
             mLocation = actualSettingLocation;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SAVE_ITEM_KEY,mSavedItemSelected);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -66,6 +76,16 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
                         .replace(R.id.weather_detail_container, new DetailFragment(), FORECASTDETAILFRAGMENT_TAG)
                         .addToBackStack(null)
                         .commit();
+            }
+            else
+            {
+                ListOfWeather forecastf =(ListOfWeather) getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_forecast);
+
+                int savedSelection = savedInstanceState.getInt(SAVE_ITEM_KEY);
+                if(mSavedItemSelected != savedSelection) {
+                    forecastf.onItemSelected(savedSelection);
+                }
             }
 
         }
@@ -113,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements ListOfWeather.OnF
 
         if(mTwoPane)
         {
+            mSavedItemSelected = pos;
             getSupportFragmentManager().beginTransaction()
                     .addToBackStack(null)
                     .replace(R.id.weather_detail_container,

@@ -76,6 +76,10 @@ public class ListOfWeather extends Fragment
     Uri mWeatherForLocationUri = null;
     String mSortOrder;
     private boolean mUseTodayLayout;
+    private int mSelectedItem = 0;
+
+
+
 
     public ListOfWeather() {
         // Required empty public constructor
@@ -108,6 +112,10 @@ public class ListOfWeather extends Fragment
         updateData();
         getLoaderManager().restartLoader(LOADER_ID, null, this);
 
+    }
+
+    public void onItemSelected( int item){
+        this.mSelectedItem = item;
     }
 
     @Override
@@ -144,6 +152,11 @@ public class ListOfWeather extends Fragment
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -157,7 +170,6 @@ public class ListOfWeather extends Fragment
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mManager);
         mRecyclerView.setAdapter(mAdapter);
-
 
         return rootView;
     }
@@ -210,6 +222,7 @@ public class ListOfWeather extends Fragment
         }
 
         mAdapter.swapCursor(data);
+        mManager.scrollToPosition(mSelectedItem);
     }
 
     @Override
