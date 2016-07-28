@@ -24,13 +24,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import mx.com.cubozsoft.sunshineapp.FetchWeatherTask;
+
 import mx.com.cubozsoft.sunshineapp.ForecastAdapter;
 import mx.com.cubozsoft.sunshineapp.ForecastItem;
 import mx.com.cubozsoft.sunshineapp.R;
 import mx.com.cubozsoft.sunshineapp.Utility;
 import mx.com.cubozsoft.sunshineapp.WifiConectorReciever;
 import mx.com.cubozsoft.sunshineapp.data.WeatherContract;
+import mx.com.cubozsoft.sunshineapp.service.SunshineService;
 
 
 public class ListOfWeather extends Fragment
@@ -143,7 +144,9 @@ public class ListOfWeather extends Fragment
     private void updateData() {
         String place = Utility.getPreferredLocation(getContext());
 
-        new FetchWeatherTask(getContext()).execute(place);
+        Intent serviceIntent = new Intent(getContext(), SunshineService.class);
+        serviceIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,place);
+        getContext().startService(serviceIntent);
     }
 
     @Override
