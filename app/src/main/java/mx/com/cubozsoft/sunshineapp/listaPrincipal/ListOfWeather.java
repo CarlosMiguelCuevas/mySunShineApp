@@ -1,5 +1,7 @@
 package mx.com.cubozsoft.sunshineapp.listaPrincipal;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -142,11 +145,27 @@ public class ListOfWeather extends Fragment
     }
 
     private void updateData() {
-        String place = Utility.getPreferredLocation(getContext());
 
-        Intent serviceIntent = new Intent(getContext(), SunshineService.class);
-        serviceIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,place);
-        getContext().startService(serviceIntent);
+        Context that = getContext();
+
+        String place = Utility.getPreferredLocation(that);
+
+        Intent alarmIntent = new Intent(that, SunshineService.AlarmReceiver.class);
+        alarmIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,place);
+
+
+//        that.startService(serviceIntent);
+
+        AlarmManager alarmMgr;
+        PendingIntent pendingAlarmIntent;
+
+        alarmMgr = (AlarmManager)that.getSystemService(Context.ALARM_SERVICE);
+
+        pendingAlarmIntent = PendingIntent.getBroadcast(that, 0, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() +
+                        5 * 1000, pendingAlarmIntent);
     }
 
     @Override

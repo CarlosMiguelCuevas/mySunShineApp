@@ -1,8 +1,10 @@
 package mx.com.cubozsoft.sunshineapp.service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -320,5 +322,18 @@ public class SunshineService extends IntentService {
         }
         quriedData.close();
         return idLocation;
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String position = intent.getStringExtra(LOCATION_QUERY_EXTRA);
+
+            Intent serviceIntent = new Intent(context,SunshineService.class);
+            serviceIntent.putExtra(LOCATION_QUERY_EXTRA,position);
+            context.startService(serviceIntent);
+
+        }
     }
 }
